@@ -1,11 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-
+use Inertia\Inertia; // <-- Não esqueça de importar o Inertia no topo
 
 Route::get('/', function () {
-    return Inertia::render('Home');
+    // O nome aqui deve ser o nome exato do seu arquivo .tsx dentro de resources/js/Pages
+    return Inertia::render('Home'); 
 });
-
-

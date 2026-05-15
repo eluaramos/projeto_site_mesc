@@ -147,3 +147,15 @@ body{
       font-size:14px;
       line-height:1.5;
     }
+
+    .icon_rodape_mideas {
+    width: 30px; /* Ajuste para o tamanho que achar melhor */
+    height: auto;
+    transition: transform 0.2s; /* Opcional: prepara para um efeitinho */
+}
+
+/* Opcional: um efeito de hover para ficar mais interativo */
+.icon_rodape_mideas:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+}
