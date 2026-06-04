@@ -1,0 +1,26 @@
+{
+	"name": "Laravel Project",
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+	"service": "laravel.test",
+	"workspaceFolder": "/var/www/html",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"amiralizadeh9480.laravel-extra-intellisense",
+				"bmewburn.vscode-intelephense-client",
+				"onecentlin.laravel-blade",
+				"onecentlin.laravel5-snippets",
+				"shufo.vscode-blade-formatter",
+				"vitaliymaz.vscode-svg-previewer",
+				"eamodio.gitlens",
+				"editorconfig.editorconfig",
+				"esbenp.prettier-vscode",
+				"dbaeumer.vscode-eslint"
+			]
+		}
+	},
+	"remoteUser": "sail",
+	"postCreateCommand": "composer install && npm install && php artisan key:generate"
+}
