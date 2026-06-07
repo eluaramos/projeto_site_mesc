@@ -1,15 +1,21 @@
-/* app.css */
 :root {
   --uff-dark-blue: #162b4d;
-  --uff-highlight: #2a9d8f;
+  --uff-highlight: #2a9d8f; /* Verde/Ciano original restaurado */
   --uff-white: #ffffff;
   --uff-text-dark: #333333;
   --uff-light-gray: #f8f9fa;
+  --font-serif: 'Lora', serif;
 }
 
-body{
-    background:#efefef;
+body {
+    background: #f4f4f4;
     margin: 0;
+    color: var(--uff-text-dark);
+}
+
+h1, h2, h3, h4, h5, h6, .serif-title {
+    font-family: var(--font-serif);
+    color: var(--uff-dark-blue);
 }
 
 /* Opcional: Classes utilitárias para não sujar o HTML com style inline */
@@ -28,7 +34,7 @@ body{
 
 .carousel-wrapper {
   position: relative;
-  height: 40vh; /* altura limitada */
+  height: 45vh; /* Aumentado ligeiramente para mais impacto */
   overflow: hidden;
 }
 
@@ -36,117 +42,266 @@ body{
   width: 100%;
   height: 100%;
   object-fit: cover;
-
-  /* centraliza melhor */
   object-position: center center;
 }
 
-/* camada escura azulada */
+/* camada escura azulada mais profunda */
 .carousel-overlay {
   position: absolute;
   inset: 0;
-
-  background: rgba(0, 60, 120, 0.45);
-
+  background: linear-gradient(rgba(13, 31, 61, 0.4), rgba(13, 31, 61, 0.7));
   z-index: 1;
 }
 
 .carousel-caption {
   z-index: 2;
-  bottom: 30%;
-
-  text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+  bottom: 25%;
+  text-shadow: 1px 1px 12px rgba(0,0,0,0.8);
 }
 
 .carousel-caption h1 {
-  font-size: 3rem;
-  font-weight: bold;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
 }
 
-.presentation-section{
-      position:relative;
-      
-      padding:120px 0 180px;
-      overflow:hidden;
-    }
+.carousel-caption p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  max-width: 800px;
+  margin: 0 auto;
+}
 
-    .section-title{
-      color:#002d74;
-      font-weight:bold;
-      text-transform:uppercase;
-      margin-bottom:60px;
-      position:relative;
-      z-index:2;
-    }
+.presentation-section {
+  position: relative;
+  padding: 100px 0 120px;
+  background-color: #fff;
+}
 
-    .presentation-text{
-      font-size:14px;
-      line-height:1.8;
-      color:#555;
-      position:relative;
-      z-index:2;
-    }
+.section-title {
+  color: var(--uff-dark-blue);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 40px;
+  position: relative;
+}
 
-    /* =========================
-       CARDS
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -15px;
+  width: 60px;
+  height: 3px;
+  background-color: var(--uff-highlight);
+}
+
+.presentation-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #444;
+}
+
+/* =========================
+   NEW SECTIONS: NUMBERS, NEWS, GATEWAYS
+   ==========================*/
+
+/* Stats Section */
+.stats-section {
+    padding: 60px 0;
+    background-color: var(--uff-dark-blue);
+    color: white;
+}
+
+.stat-item h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--uff-highlight);
+    margin-bottom: 5px;
+}
+
+.stat-item p {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+/* News Section */
+.news-section {
+    padding: 100px 0;
+    background-color: #fff;
+}
+
+.news-card {
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: 0.3s;
+    height: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.news-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.news-date {
+    font-size: 0.8rem;
+    color: var(--uff-highlight);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.news-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--uff-dark-blue);
+    margin-top: 10px;
+}
+
+/* Event List */
+.event-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.event-date-box {
+    background: var(--uff-light-gray);
+    color: var(--uff-dark-blue);
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    min-width: 60px;
+}
+
+.event-date-box .day { font-size: 1.2rem; font-weight: 700; display: block; }
+.event-date-box .month { font-size: 0.7rem; text-transform: uppercase; }
+
+/* Gateways */
+.gateway-card {
+    background: var(--uff-light-gray);
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    transition: 0.3s;
+    text-decoration: none;
+    display: block;
+    border-bottom: 4px solid transparent;
+}
+
+.gateway-card:hover {
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-bottom-color: var(--uff-highlight);
+    transform: translateY(-5px);
+}
+
+.gateway-card i {
+    font-size: 2rem;
+    color: var(--uff-dark-blue);
+    margin-bottom: 15px;
+    display: block;
+}
+
+.gateway-card span {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: var(--uff-dark-blue);
+    font-size: 1.1rem;
+}
+
+/* Lab Section */
+.lab-card {
+    position: relative;
+    height: 250px;
+    border-radius: 8px;
+    overflow: hidden;
+    color: white;
+}
+
+.lab-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+.lab-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(22, 43, 77, 0.9), transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+}
+
+.lab-card:hover img { transform: scale(1.1); }
+
+/* =========================
+   CARDS
     ==========================*/
 
-    .info-cards{
-      position:relative;
-      z-index:2;
-      margin-top:120px;
-    }
+.info-cards {
+  margin-top: 80px;
+}
 
-    .custom-card{
-      background:white;
-      border-radius:8px;
-      padding:30px 20px;
-      text-align:center;
+.custom-card {
+  background: white;
+  border-radius: 4px;
+  padding: 40px 25px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  height: 100%;
+}
 
-      box-shadow:
-        0 4px 12px rgba(0,0,0,0.12);
+.custom-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+  border-color: var(--uff-highlight);
+}
 
-      border:1px solid #d7d7ff;
+.card-icon {
+  width: 65px;
+  height: 65px;
+  margin: 0 auto 25px;
+  border-radius: 50%;
+  background: var(--uff-dark-blue);
+  color: var(--uff-highlight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  transition: 0.3s;
+}
 
-      transition:0.3s;
-      height:100%;
-    }
+.custom-card:hover .card-icon {
+  background: var(--uff-highlight);
+  color: var(--uff-dark-blue);
+}
 
-    .custom-card:hover{
-      transform:translateY(-5px);
-    }
+.custom-card h5 {
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
 
-    .card-icon{
-      width:55px;
-      height:55px;
-
-      margin:0 auto 20px;
-
-      border-radius:50%;
-
-      background:#002d74;
-      color:white;
-
-      display:flex;
-      align-items:center;
-      justify-content:center;
-
-      font-size:22px;
-    }
-
-    .custom-card h5{
-      color:#002d74;
-      font-size:15px;
-      font-weight:bold;
-      text-transform:uppercase;
-      margin-bottom:15px;
-    }
-
-    .custom-card p{
-      color:#666;
-      font-size:14px;
-      line-height:1.5;
-    }
+.custom-card p {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
 
     .icon_rodape_mideas {
     width: 30px; /* Ajuste para o tamanho que achar melhor */

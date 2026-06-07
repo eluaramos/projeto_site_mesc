@@ -31,19 +31,19 @@ const Header: React.FC = () => {
 
           <div 
             className="d-none d-md-block rounded" 
-            style={{ width: '4px', height: '70px', backgroundColor: 'var(--uff-highlight)' }}
+            style={{ width: '2px', height: '70px', backgroundColor: 'var(--uff-highlight)' }}
           ></div>
 
           <div>
             <h1 
               className="mb-1 fw-bold" 
-              style={{ color: 'var(--uff-dark-blue)', fontSize: '1.6rem', lineHeight: '1.2' }}
+              style={{ color: 'var(--uff-dark-blue)', fontSize: '1.6rem', lineHeight: '1.2', fontFamily: 'var(--font-serif)' }}
             >
               Mestrado Profissional em Engenharia de Produção
             </h1>
             <h2 
               className="mb-0 fw-light" 
-              style={{ color: 'var(--uff-dark-blue)', fontSize: '1.4rem' }}
+              style={{ color: 'var(--uff-dark-blue)', fontSize: '1.4rem', fontFamily: 'var(--font-serif)' }}
             >
               e Sistemas Computacionais
             </h2>
@@ -54,7 +54,8 @@ const Header: React.FC = () => {
 
       {/* SEÇÃO INFERIOR: Menu de Navegação */}
       <nav 
-        className="w-100 position-relative z-2" 
+        className="w-100 position-relative z-2 border-top border-bottom" 
+        style={{ borderColor: '#f0f0f0' }}
         onMouseLeave={handleMouseLeaveNav}
       >
         <div className="container d-flex flex-wrap justify-content-center">
@@ -75,9 +76,12 @@ const Header: React.FC = () => {
                   backgroundColor: activeTopId === topItem.id ? 'rgba(0,0,0,0.05)' : 'transparent',
                   color: 'var(--uff-dark-blue)',
                   cursor: 'pointer',
-                  fontWeight: '500',
-                  fontSize: '0.95rem',
-                  transition: 'background-color 0.2s'
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  transition: 'all 0.2s',
+                  borderBottom: activeTopId === topItem.id ? '2px solid var(--uff-highlight)' : '2px solid transparent'
                 }}
               >
                 {topItem.link && !topItem.children ? (
