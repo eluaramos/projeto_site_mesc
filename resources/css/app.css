@@ -323,3 +323,59 @@ h1, h2, h3, h4, h5, h6, .serif-title {
     transform: scale(1.1);
     cursor: pointer;
 }
+
+/* =========================
+   PAGE HEADER BANNER (páginas internas)
+   ==========================*/
+
+.page-header-banner {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.page-header-banner img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.page-header-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(13, 31, 61, 0.55), rgba(13, 31, 61, 0.8));
+}
+
+.page-header-banner .container {
+  position: relative;
+  z-index: 1;
+}
+
+.page-header-banner h1 {
+  color: #fff;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.page-header-breadcrumb {
+  font-size: 0.9rem;
+}
+
+.page-header-breadcrumb a {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+}
+
+.page-header-breadcrumb a:hover {
+  color: #fff;
+}
+
+.page-header-breadcrumb span {
+  color: #fff;
+}
