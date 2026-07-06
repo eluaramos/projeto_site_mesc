@@ -147,5 +147,5 @@ export const menuData: MenuItem[] = [
       { id: 'aluno-especial', label: 'Aluno Especial', link: '#aluno-especial' }
     ]
   },
-  { id: 'contato', label: 'CONTATO', link: '#contato' }
+  { id: 'contato', label: 'CONTATO', link: '/contato' }
 ];
