@@ -73,6 +73,39 @@ const Contato: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* SECTORAL CONTACTS SECTION */}
+        <section className="py-5 bg-light">
+          <div className="container">
+            <div className="text-center mb-5">
+              <h2 className="serif-title">Contatos Setoriais</h2>
+              <p className="text-muted">Fale diretamente com o setor responsável pelo seu assunto.</p>
+            </div>
+            <div className="row g-4">
+              <div className="col-md-4">
+                <div className="custom-card">
+                  <div className="card-icon"><i className="bi bi-person-workspace"></i></div>
+                  <h5>Coordenação do Programa</h5>
+                  <p>coordenacao@mesc.uff.br<br />(22) 2764-9081</p>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="custom-card">
+                  <div className="card-icon"><i className="bi bi-folder2-open"></i></div>
+                  <h5>Secretaria Acadêmica</h5>
+                  <p>secretaria@mesc.uff.br<br />Segunda a sexta, das 8h às 17h</p>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="custom-card">
+                  <div className="card-icon"><i className="bi bi-tools"></i></div>
+                  <h5>Suporte Técnico e Laboratórios</h5>
+                  <p>suporte@mesc.uff.br</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer />
