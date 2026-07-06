@@ -33,6 +33,9 @@ RUN apt-get update \
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
 
+# opcache.enable_cli is off by default, so php artisan serve recompiles the whole framework on every request
+RUN echo "opcache.enable_cli=1" > /etc/php/8.3/cli/conf.d/99-opcache-cli.ini
+
 RUN groupadd --force -g $WWWGROUP sail
 RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 
