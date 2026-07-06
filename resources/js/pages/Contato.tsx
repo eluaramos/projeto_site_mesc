@@ -1,13 +1,9 @@
 import React from 'react';
-import GoogleMap from '../components/GoogleMap';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const Contato: React.FC = () => {
-  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  const coordinates = { lat: -22.503, lng: -41.923611 };
-
   return (
     <div className="d-flex flex-column min-vh-100 font-sans" style={{ backgroundColor: 'var(--uff-light-gray)' }}>
       <Header />
@@ -107,30 +103,6 @@ const Contato: React.FC = () => {
                   <p>suporte@mesc.uff.br</p>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* MAP SECTION */}
-        <section className="py-5 bg-white border-top">
-          <div className="container">
-            <div className="row align-items-center mb-4">
-              <div className="col-lg-4">
-                <h2 className="section-title">Como Chegar</h2>
-              </div>
-              <div className="col-lg-8">
-                <p className="presentation-text mb-0">
-                  Instituto de Ciência e Tecnologia – UFF<br />
-                  Rua Recife, s/n, Jardim Bela Vista, Rio das Ostras – RJ | CEP: 28895-532
-                </p>
-              </div>
-            </div>
-            <div className="overflow-hidden rounded shadow-sm" style={{ height: '350px' }}>
-              <GoogleMap
-                apiKey={GOOGLE_MAPS_API_KEY}
-                lat={coordinates.lat}
-                lng={coordinates.lng}
-              />
             </div>
           </div>
         </section>
