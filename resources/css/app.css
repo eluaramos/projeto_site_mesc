@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --uff-dark-blue: #162b4d;
   --uff-highlight: #2a9d8f; /* Verde/Ciano original restaurado */
