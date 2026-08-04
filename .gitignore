@@ -144,4 +144,5 @@ vite.config.ts.timestamp-*
 .github
 
 # Git worktrees used for isolated feature work
-/.worktrees
+/.worktreespublic/hot
+*.bak
