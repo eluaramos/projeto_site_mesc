@@ -141,7 +141,6 @@ vite.config.ts.timestamp-*
 /vendor
 /public/build
 
-.github
 
 # Git worktrees used for isolated feature work
 /.worktreespublic/hot
