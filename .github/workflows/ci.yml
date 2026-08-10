@@ -48,6 +48,18 @@ jobs:
 
       - name: Rodar seeders
         run: php artisan db:seed --force
+      
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependências Node
+        run: npm ci
+
+      - name: Build dos assets (Vite)
+        run: npm run build
 
       - name: Rodar testes com Pest
         run: php artisan test
