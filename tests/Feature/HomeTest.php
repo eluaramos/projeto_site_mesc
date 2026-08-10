@@ -1,8 +1,4 @@
-﻿<?php
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
+<?php
 
 test('página inicial carrega com sucesso', function () {
     $response = $this->get('/');
