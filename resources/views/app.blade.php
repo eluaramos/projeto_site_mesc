@@ -3,26 +3,37 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        <meta name="description" content="Mestrado Profissional em Engenharia de Produção e Sistemas Computacionais - UFF">
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
+        {{-- Fontes --}}
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600|lora:400,500,600,700" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+        {{-- VLibras --}}
+        <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+        <script>
+            new window.VLibras.Widget('https://vlibras.gov.br/app');
+        </script>
 
         @routes
         @viteReactRefresh
-        
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
+        {{-- VLibras widget container --}}
+        <div vw class="enabled">
+            <div vw-access-button class="active"></div>
+            <div vw-plugin-wrapper>
+                <div class="vw-plugin-top-wrapper"></div>
+            </div>
+        </div>
 
+        {{-- Barra do Governo Federal --}}
         <div id="barra-brasil"></div>
-        <script defer="defer" src="//barra.brasil.gov.br/barra_2.0.js" type="text/javascript"></script>
+        <script defer src="//barra.brasil.gov.br/barra_2.0.js" type="text/javascript"></script>
 
         @inertia
-
     </body>
 </html>
