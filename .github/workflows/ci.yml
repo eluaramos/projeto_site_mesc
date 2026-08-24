@@ -1,0 +1,96 @@
+﻿name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [develop]
+
+jobs:
+  tests:
+    name: Testes PHP (Pest)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo, pdo_sqlite, sqlite3
+          coverage: none
+
+      - name: Instalar dependências PHP
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Criar .env para CI
+        run: |
+          echo "APP_NAME=MESC" > .env
+          echo "APP_ENV=testing" >> .env
+          echo "APP_KEY=" >> .env
+          echo "APP_DEBUG=true" >> .env
+          echo "APP_URL=http://localhost" >> .env
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=database/database.sqlite" >> .env
+          echo "SESSION_DRIVER=array" >> .env
+          echo "CACHE_STORE=array" >> .env
+
+      - name: Gerar chave da aplicação
+        run: php artisan key:generate
+
+      - name: Criar banco SQLite
+        run: touch database/database.sqlite
+
+      - name: Rodar migrations
+        run: php artisan migrate --force
+
+      - name: Rodar seeders
+        run: php artisan db:seed --force
+      
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependências Node
+        run: npm ci
+
+      - name: Build dos assets (Vite)
+        run: npm run build
+
+      - name: Rodar testes com Pest
+        run: php artisan test
+
+  lint:
+    name: Qualidade de código (Pint + ESLint)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Instalar dependências PHP
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Rodar Laravel Pint
+        run: ./vendor/bin/pint --test
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependências Node
+        run: npm ci
+
+      - name: Rodar ESLint
+        run: npm run lint:check

@@ -1,254 +1,338 @@
-import React from 'react';
-import Carousel from 'react-bootstrap/Carousel';
+import {
+    BookOpen,
+    Briefcase,
+    FlaskConical,
+    GraduationCap,
+    Lightbulb,
+    Search,
+    Target,
+    UserCheck,
+} from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Header from '../components/Header';
+import { useTranslation } from '../hooks/useTranslation';
 
-const Home: React.FC = () => {
-  // Dados fictícios para fácil alteração futura
-  const stats = [
-    { label: 'Anos de Excelência', value: '22' },
-    { label: 'Nota CAPES', value: '4' },
-    { label: 'Dissertações', value: '+500' },
-    { label: 'Laboratórios', value: '12' },
-  ];
+interface NewsItem {
+    id: number;
+    title: string;
+    date: string;
+    image: string;
+    category: string;
+}
 
-  const news = [
-    {
-      id: 1,
-      title: 'MESC abre inscrições para Aluno Especial 2026.2',
-      date: '15 Mai 2026',
-      image: '/images/data_science.png',
-      category: 'Editais',
-    },
-    {
-      id: 2,
-      title: 'Workshop de Inteligência Artificial aplicada à Indústria 4.0',
-      date: '10 Mai 2026',
-      image: '/images/data_science_research.png',
-      category: 'Eventos',
-    },
-  ];
+interface EventItem {
+    id: number;
+    day: string;
+    month: string;
+    title: string;
+}
 
-  const events = [
-    { id: 1, day: '25', month: 'JUN', title: 'Defesa de Dissertação: João Silva' },
-    { id: 2, day: '02', month: 'JUL', title: 'Seminário de Pesquisa Operacional' },
-    { id: 3, day: '15', month: 'JUL', title: 'Prazo Final: Qualificação 2026.1' },
-  ];
+interface CarouselSlide {
+    image: string;
+    alt: string;
+    title: string;
+    subtitle: string;
+    primaryCta: string;
+    secondaryCta: string;
+}
 
-  const gateways = [
-    { icon: 'bi-person-badge', label: 'Futuros Alunos', link: '#' },
-    { icon: 'bi-mortarboard', label: 'Alunos Regulares', link: '#' },
-    { icon: 'bi-briefcase', label: 'Egressos', link: '#' },
-    { icon: 'bi-search', label: 'Pesquisadores', link: '#' },
-  ];
+function Carousel({ slides }: { slides: CarouselSlide[] }) {
+    const [current, setCurrent] = useState(0);
+    const [paused, setPaused] = useState(false);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const labs = [
-    { name: 'Laboratório de Sistemas Inteligentes', image: '/images/lab_presentation.png' },
-    { name: 'Otimização e Pesquisa Operacional', image: '/images/data_science_research.png' },
-    { name: 'Engenharia de Software Avançada', image: '/images/data_science.png' },
-  ];
+    const goTo = (index: number) => setCurrent((index + slides.length) % slides.length);
 
-  return (
-    <div className="d-flex flex-column min-vh-100 font-sans" style={{ backgroundColor: 'var(--uff-light-gray)' }}>
-      <Header />
+    useEffect(() => {
+        if (paused) return;
+        timerRef.current = setTimeout(() => goTo(current + 1), 5000);
+        return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+    }, [current, paused]);
 
-      <main className="mx-0 my-0 p-0 bg-white">
-        {/* HERO SECTION */}
-        <Carousel fade controls indicators>
-            <Carousel.Item>
-                <div className="carousel-wrapper">
-                    <img className="carousel-image" src="/images/lab_presentation.png" alt="Laboratório MESC" />
-                    <div className="carousel-overlay"></div>
-                    <Carousel.Caption>
-                        <h1 style={{ fontFamily: 'var(--font-serif)' }}>Impacto Tecnológico e Excelência Acadêmica</h1>
-                        <p>Formando líderes em Engenharia de Produção e Sistemas Computacionais para os desafios do futuro.</p>
-                        <div className="mt-4">
-                            <a href="#" className="btn btn-primary btn-lg px-4 me-3 border-0" style={{ backgroundColor: 'var(--uff-highlight)' }}>Processo Seletivo</a>
-                            <a href="#" className="btn btn-outline-light btn-lg px-4">Conheça o Programa</a>
-                        </div>
-                    </Carousel.Caption>
-                </div>
-            </Carousel.Item>
-            <Carousel.Item>
-                <div className="carousel-wrapper">
-                    <img className="carousel-image" src="/images/banner_01.png" alt="Pesquisa Avançada" />
-                    <div className="carousel-overlay"></div>
-                    <Carousel.Caption>
-                        <h1 style={{ fontFamily: 'var(--font-serif)' }}>Inovação em Sistemas Computacionais</h1>
-                        <p>Pesquisa de ponta aplicada à resolução de problemas complexos da indústria 4.0.</p>
-                        <div className="mt-4">
-                            <a href="#" className="btn btn-primary btn-lg px-4 me-3 border-0" style={{ backgroundColor: 'var(--uff-highlight)' }}>Nossas Áreas</a>
-                            <a href="#" className="btn btn-outline-light btn-lg px-4">Laboratórios</a>
-                        </div>
-                    </Carousel.Caption>
-                </div>
-            </Carousel.Item>
-            <Carousel.Item>
-                <div className="carousel-wrapper">
-                    <img className="carousel-image" src="/images/banner_02.png" alt="Engenharia de Produção" />
-                    <div className="carousel-overlay"></div>
-                    <Carousel.Caption>
-                        <h1 style={{ fontFamily: 'var(--font-serif)' }}>Excelência em Engenharia de Produção</h1>
-                        <p>Otimização de processos e gestão estratégica com foco em resultados e sustentabilidade.</p>
-                        <div className="mt-4">
-                            <a href="#" className="btn btn-primary btn-lg px-4 me-3 border-0" style={{ backgroundColor: 'var(--uff-highlight)' }}>Corpo Docente</a>
-                            <a href="#" className="btn btn-outline-light btn-lg px-4">Publicações</a>
-                        </div>
-                    </Carousel.Caption>
-                </div>
-            </Carousel.Item>
-        </Carousel>
-
-        {/* STATS SECTION */}
-        <section className="stats-section">
-            <div className="container">
-                <div className="row text-center g-4">
-                    {stats.map((stat, index) => (
-                        <div key={index} className="col-md-3 stat-item">
-                            <h3 className="serif-title">{stat.value}</h3>
-                            <p className="mb-0">{stat.label}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-
-        {/* PRESENTATION SECTION */}
-        <section className="presentation-section">
-            <div className="container">
-                <div className="row align-items-center mb-5">
-                    <div className="col-lg-4">
-                        <h2 className="section-title">Apresentação</h2>
-                    </div>
-                    <div className="col-lg-8">
-                        <p className="presentation-text mb-0">
-                            O Mestrado Profissional em Engenharia de Produção e Sistemas Computacionais da UFF
-                            integra conhecimentos avançados para solucionar problemas complexos da indústria moderna,
-                            aliando rigor acadêmico com aplicação prática imediata.
-                        </p>
-                    </div>
-                </div>
-
-                <div className="row justify-content-center info-cards g-4">
-                    <div className="col-md-4">
-                        <div className="custom-card">
-                            <div className="card-icon"><i className="bi bi-bullseye"></i></div>
-                            <h5>Nossa Missão</h5>
-                            <p>Desenvolver talentos técnicos e inovadores para impulsionar a sociedade tecnológica.</p>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="custom-card">
-                            <div className="card-icon"><i className="bi bi-eye"></i></div>
-                            <h5>Nossa Visão</h5>
-                            <p>Ser referência nacional em mestrados profissionais pela qualidade e impacto de suas pesquisas.</p>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="custom-card">
-                            <div className="card-icon"><i className="bi bi-lightbulb"></i></div>
-                            <h5>Nossos Valores</h5>
-                            <p>Ética, excelência acadêmica, inovação constante e compromisso com o desenvolvimento regional.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {/* GATEWAYS SECTION */}
-        <section className="py-5 bg-light">
-            <div className="container">
-                <div className="row g-4">
-                    {gateways.map((gate, index) => (
-                        <div key={index} className="col-6 col-md-3">
-                            <a href={gate.link} className="gateway-card text-decoration-none">
-                                <i className={`bi ${gate.icon}`}></i>
-                                <span>{gate.label}</span>
+    return (
+        <div
+            className="relative w-full overflow-hidden"
+            style={{ height: '520px' }}
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+        >
+            {slides.map((slide, i) => (
+                <div
+                    key={i}
+                    className="absolute inset-0 transition-opacity duration-700"
+                    style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}
+                    aria-hidden={i !== current}
+                >
+                    <img src={slide.image} alt={slide.alt} className="h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+                        <h1
+                            className="mb-4 max-w-3xl text-4xl font-bold leading-tight md:text-5xl"
+                            style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
+                        >
+                            {slide.title}
+                        </h1>
+                        <p className="mb-8 max-w-xl text-base text-white/85 md:text-lg">{slide.subtitle}</p>
+                        <div className="flex flex-wrap justify-center gap-3">
+                            <a
+                                href="#"
+                                className="rounded-md px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                                style={{ backgroundColor: 'var(--uff-highlight, #007bff)' }}
+                            >
+                                {slide.primaryCta}
+                            </a>
+                            <a
+                                href="#"
+                                className="rounded-md border border-white/70 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10"
+                            >
+                                {slide.secondaryCta}
                             </a>
                         </div>
-                    ))}
+                    </div>
                 </div>
+            ))}
+            <button
+                onClick={() => goTo(current - 1)}
+                aria-label="Slide anterior"
+                className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white transition-colors hover:bg-black/50"
+            >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <button
+                onClick={() => goTo(current + 1)}
+                aria-label="Proximo slide"
+                className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white transition-colors hover:bg-black/50"
+            >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+            <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+                {slides.map((_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => goTo(i)}
+                        aria-label={`Ir para slide ${i + 1}`}
+                        className={`h-2 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-2 bg-white/50'}`}
+                    />
+                ))}
             </div>
-        </section>
+        </div>
+    );
+}
 
-        {/* NEWS & EVENTS SECTION */}
-        <section className="news-section">
-            <div className="container">
-                <div className="row g-5">
-                    {/* News Column */}
-                    <div className="col-lg-8">
-                        <div className="d-flex justify-content-between align-items-end mb-4">
-                            <h2 className="serif-title mb-0">Notícias Recentes</h2>
-                            <a href="#" className="text-decoration-none" style={{ color: 'var(--uff-highlight)' }}>Ver todas ›</a>
+const Home: React.FC = () => {
+    const { t } = useTranslation();
+
+    const slides: CarouselSlide[] = [
+        {
+            image: '/images/lab_presentation.png',
+            alt: 'Laboratorio MESC',
+            title: t('home.hero_title'),
+            subtitle: t('home.hero_subtitle'),
+            primaryCta: t('nav.selection'),
+            secondaryCta: t('nav.about'),
+        },
+        {
+            image: '/images/banner_01.png',
+            alt: 'Pesquisa Avancada',
+            title: t('home.hero_title'),
+            subtitle: t('home.hero_subtitle'),
+            primaryCta: t('nav.research'),
+            secondaryCta: t('nav.faculty'),
+        },
+        {
+            image: '/images/banner_02.png',
+            alt: 'Engenharia de Producao',
+            title: t('home.hero_title'),
+            subtitle: t('home.hero_subtitle'),
+            primaryCta: t('nav.faculty'),
+            secondaryCta: t('nav.news'),
+        },
+    ];
+
+    const stats = [
+        { label: t('home.stats.years'), value: '22' },
+        { label: t('home.stats.capes'), value: '4' },
+        { label: t('home.stats.dissertations'), value: '+500' },
+        { label: t('home.stats.labs'), value: '12' },
+    ];
+
+    const news: NewsItem[] = [
+        {
+            id: 1,
+            title: 'MESC abre inscricoes para Aluno Especial 2026.2',
+            date: '15 Mai 2026',
+            image: '/images/data_science.png',
+            category: 'Editais',
+        },
+        {
+            id: 2,
+            title: 'Workshop de Inteligencia Artificial aplicada a Industria 4.0',
+            date: '10 Mai 2026',
+            image: '/images/data_science_research.png',
+            category: 'Eventos',
+        },
+    ];
+
+    const events: EventItem[] = [
+        { id: 1, day: '25', month: 'JUN', title: 'Defesa de Dissertacao: Joao Silva' },
+        { id: 2, day: '02', month: 'JUL', title: 'Seminario de Pesquisa Operacional' },
+        { id: 3, day: '15', month: 'JUL', title: 'Prazo Final: Qualificacao 2026.1' },
+    ];
+
+    const gateways = [
+        { icon: <UserCheck size={28} />, label: t('gateway.future_students'), link: '#' },
+        { icon: <GraduationCap size={28} />, label: t('gateway.regular_students'), link: '#' },
+        { icon: <Briefcase size={28} />, label: t('gateway.alumni'), link: '#' },
+        { icon: <Search size={28} />, label: t('gateway.researchers'), link: '#' },
+    ];
+
+    const labs = [
+        { name: 'Laboratorio de Sistemas Inteligentes', image: '/images/lab_presentation.png' },
+        { name: 'Otimizacao e Pesquisa Operacional', image: '/images/data_science_research.png' },
+        { name: 'Engenharia de Software Avancada', image: '/images/data_science.png' },
+    ];
+
+    const missionCards = [
+        { icon: <Target size={24} />, title: t('home.mission_title'), text: t('home.mission_text') },
+        { icon: <BookOpen size={24} />, title: t('home.vision_title'), text: t('home.vision_text') },
+        { icon: <Lightbulb size={24} />, title: t('home.values_title'), text: t('home.values_text') },
+    ];
+
+    return (
+        <div className="flex min-h-screen flex-col font-sans" style={{ backgroundColor: 'var(--uff-light-gray, #f5f5f5)' }}>
+            <Header />
+            <main className="m-0 bg-white p-0">
+                <Carousel slides={slides} />
+
+                <section className="py-10" style={{ backgroundColor: 'var(--uff-dark-blue, #003366)' }}>
+                    <div className="mx-auto max-w-5xl px-4">
+                        <div className="grid grid-cols-2 gap-6 text-center md:grid-cols-4">
+                            {stats.map((stat, i) => (
+                                <div key={i} className="text-white">
+                                    <p className="text-4xl font-bold" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>{stat.value}</p>
+                                    <p className="mt-1 text-sm text-white/75">{stat.label}</p>
+                                </div>
+                            ))}
                         </div>
-                        <div className="row g-4">
-                            {news.map(item => (
-                                <div key={item.id} className="col-md-6">
-                                    <div className="news-card">
-                                        <img src={item.image} alt={item.title} className="card-img-top" />
-                                        <div className="card-body p-4">
-                                            <span className="news-date">{item.date} | {item.category}</span>
-                                            <h4 className="news-title">{item.title}</h4>
-                                            <a href="#" className="btn btn-link p-0 mt-2 text-decoration-none" style={{ color: 'var(--uff-highlight)' }}>Leia mais</a>
+                    </div>
+                </section>
+
+                <section className="py-16">
+                    <div className="mx-auto max-w-5xl px-4">
+                        <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-start">
+                            <div className="md:w-1/3">
+                                <h2 className="text-3xl font-bold" style={{ color: 'var(--uff-dark-blue, #003366)', fontFamily: 'var(--font-serif, Georgia, serif)' }}>
+                                    {t('home.presentation_title')}
+                                </h2>
+                            </div>
+                            <div className="md:w-2/3">
+                                <p className="text-base leading-relaxed text-gray-600">{t('home.presentation_text')}</p>
+                            </div>
+                        </div>
+                        <div className="grid gap-6 md:grid-cols-3">
+                            {missionCards.map((card, i) => (
+                                <div key={i} className="rounded-xl border border-gray-100 p-6 shadow-sm transition-shadow hover:shadow-md">
+                                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg" style={{ backgroundColor: 'var(--uff-highlight-light, #e8f0fe)', color: 'var(--uff-highlight, #007bff)' }}>
+                                        {card.icon}
+                                    </div>
+                                    <h5 className="mb-2 font-semibold" style={{ color: 'var(--uff-dark-blue, #003366)' }}>{card.title}</h5>
+                                    <p className="text-sm leading-relaxed text-gray-500">{card.text}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section className="bg-gray-50 py-12">
+                    <div className="mx-auto max-w-5xl px-4">
+                        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                            {gateways.map((gate, i) => (
+                                <a key={i} href={gate.link} className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-white p-6 text-center transition-all hover:-translate-y-0.5 hover:shadow-md" style={{ color: 'var(--uff-dark-blue, #003366)', textDecoration: 'none' }}>
+                                    <span style={{ color: 'var(--uff-highlight, #007bff)' }}>{gate.icon}</span>
+                                    <span className="text-sm font-medium">{gate.label}</span>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section className="py-16">
+                    <div className="mx-auto max-w-5xl px-4">
+                        <div className="flex flex-col gap-10 lg:flex-row">
+                            <div className="lg:w-2/3">
+                                <div className="mb-6 flex items-end justify-between">
+                                    <h2 className="text-2xl font-bold" style={{ color: 'var(--uff-dark-blue, #003366)', fontFamily: 'var(--font-serif, Georgia, serif)' }}>{t('home.news_title')}</h2>
+                                    <a href="#" className="text-sm font-medium hover:underline" style={{ color: 'var(--uff-highlight, #007bff)' }}>{t('home.news_all')} </a>
+                                </div>
+                                <div className="grid gap-6 sm:grid-cols-2">
+                                    {news.map((item) => (
+                                        <div key={item.id} className="overflow-hidden rounded-xl border border-gray-100 shadow-sm transition-shadow hover:shadow-md">
+                                            <img src={item.image} alt={item.title} className="h-44 w-full object-cover" />
+                                            <div className="p-4">
+                                                <span className="text-xs text-gray-400">{item.date} &middot; {item.category}</span>
+                                                <h4 className="mt-2 text-sm font-semibold leading-snug" style={{ color: 'var(--uff-dark-blue, #003366)' }}>{item.title}</h4>
+                                                <a href="#" className="mt-3 inline-block text-xs font-medium hover:underline" style={{ color: 'var(--uff-highlight, #007bff)' }}>{t('home.read_more')} </a>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="lg:w-1/3">
+                                <h2 className="mb-6 text-2xl font-bold" style={{ color: 'var(--uff-dark-blue, #003366)', fontFamily: 'var(--font-serif, Georgia, serif)' }}>{t('home.events_title')}</h2>
+                                <div className="rounded-xl bg-gray-50 p-5">
+                                    <div className="flex flex-col gap-4">
+                                        {events.map((ev) => (
+                                            <div key={ev.id} className="flex items-start gap-4">
+                                                <div className="flex min-w-12 flex-col items-center rounded-lg py-2 text-center text-white" style={{ backgroundColor: 'var(--uff-highlight, #007bff)' }}>
+                                                    <span className="text-lg font-bold leading-none">{ev.day}</span>
+                                                    <span className="text-xs">{ev.month}</span>
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-semibold leading-snug" style={{ color: 'var(--uff-dark-blue, #003366)' }}>{ev.title}</p>
+                                                    <a href="#" className="mt-1 text-xs text-gray-400 hover:underline">{t('home.learn_more')}</a>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <a href="#" className="mt-6 block w-full rounded-lg border py-2 text-center text-sm font-medium transition-colors hover:bg-gray-100" style={{ borderColor: 'var(--uff-highlight, #007bff)', color: 'var(--uff-highlight, #007bff)' }}>{t('home.events_all')}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="border-t border-gray-100 bg-white py-16">
+                    <div className="mx-auto max-w-5xl px-4">
+                        <div className="mb-10 text-center">
+                            <h2 className="text-2xl font-bold" style={{ color: 'var(--uff-dark-blue, #003366)', fontFamily: 'var(--font-serif, Georgia, serif)' }}>{t('home.labs_title')}</h2>
+                            <p className="mt-2 text-sm text-gray-500">{t('home.labs_subtitle')}</p>
+                        </div>
+                        <div className="grid gap-6 md:grid-cols-3">
+                            {labs.map((lab, i) => (
+                                <div key={i} className="group relative overflow-hidden rounded-xl">
+                                    <img src={lab.image} alt={lab.name} className="h-52 w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                                    <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 to-transparent p-4">
+                                        <div className="flex items-center gap-2 text-white">
+                                            <FlaskConical size={16} className="shrink-0" />
+                                            <p className="text-sm font-semibold leading-snug">{lab.name}</p>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
-
-                    {/* Events Column */}
-                    <div className="col-lg-4">
-                        <h2 className="serif-title mb-4">Agenda</h2>
-                        <div className="bg-light p-4 rounded">
-                            {events.map(event => (
-                                <div key={event.id} className="event-item d-flex gap-3 align-items-start">
-                                    <div className="event-date-box">
-                                        <span className="day">{event.day}</span>
-                                        <span className="month">{event.month}</span>
-                                    </div>
-                                    <div>
-                                        <h6 className="mb-1 fw-bold" style={{ color: 'var(--uff-dark-blue)' }}>{event.title}</h6>
-                                        <a href="#" className="small text-muted text-decoration-none">Saiba mais</a>
-                                    </div>
-                                </div>
-                            ))}
-                            <a href="#" className="btn btn-outline-primary w-100 mt-4 border-uff-highlight" style={{ color: 'var(--uff-highlight)' }}>Ver Calendário Completo</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {/* LABS SECTION */}
-        <section className="py-5 bg-white border-top">
-            <div className="container">
-                <div className="text-center mb-5">
-                    <h2 className="serif-title">Laboratórios e Pesquisa</h2>
-                    <p className="text-muted">Infraestrutura de ponta para o desenvolvimento de soluções tecnológicas.</p>
-                </div>
-                <div className="row g-4">
-                    {labs.map((lab, index) => (
-                        <div key={index} className="col-md-4">
-                            <div className="lab-card">
-                                <img src={lab.image} alt={lab.name} />
-                                <div className="lab-overlay">
-                                    <h5 className="mb-0 fw-bold">{lab.name}</h5>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
-  );
+                </section>
+            </main>
+            <Footer />
+        </div>
+    );
 };
 
 export default Home;
-
 
