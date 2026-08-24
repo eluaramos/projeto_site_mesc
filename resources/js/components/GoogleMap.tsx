@@ -13,7 +13,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, lat, lng }) => {
     useEffect(() => {
         setOptions({
             key: apiKey,
-            version: 'weekly',
+            v: 'weekly',
         });
 
         const initMap = async () => {

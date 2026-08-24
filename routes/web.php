@@ -8,6 +8,10 @@ Route::get('/', function () {
     return Inertia::render('Home');
 });
 
+Route::get('/sobre', function () {
+    return Inertia::render('Sobre');
+});
+
 Route::get('/contato', function () {
     return Inertia::render('Contato');
 });
