@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import { menuData } from '../data/menuData';
 
+import { usePage, Link } from '@inertiajs/react';
+
+
 const Header: React.FC = () => {
   // Estados de controlo do Navbar
   const [activeTopId, setActiveTopId] = useState<string | null>(null);
@@ -13,6 +16,9 @@ const Header: React.FC = () => {
     setActiveSubId(null);
     setActiveGrandId(null);
   };
+
+  const { auth } = usePage().props as any; //Para o Login/logout
+
 
   return (
     // Bloco único que envolve tanto a Logo/Título como o Menu. 
@@ -51,6 +57,8 @@ const Header: React.FC = () => {
 
         </div>
       </div>
+
+      
 
       {/* SEÇÃO INFERIOR: Menu de Navegação */}
       <nav 

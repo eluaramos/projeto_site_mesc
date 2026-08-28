@@ -145,3 +145,5 @@ vite.config.ts.timestamp-*
 # Git worktrees used for isolated feature work
 /.worktreespublic/hot
 *.bak
+CLAUDE.md
+boost.json
