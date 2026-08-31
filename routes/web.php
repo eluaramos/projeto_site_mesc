@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\ConfirmablePasswordController; // <-- Não esqueça de importar o Inertia no topo
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -19,6 +20,16 @@ Route::get('/', function () {
 Route::get('/contato', function () {
     return Inertia::render('Contato');
 });
+
+Route::get('/lang/{locale}', function (string $locale) {
+    $supported = ['pt_BR', 'en', 'es'];
+
+    if (in_array($locale, $supported)) {
+        Session::put('locale', $locale);
+    }
+
+    return redirect()->back();
+})->name('lang.switch');
 
 // Rotas de autenticação
 Route::middleware('guest')->group(function () {
@@ -34,6 +45,17 @@ Route::middleware('guest')->group(function () {
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 });
+
+// Rota seletora de idiomas da homepage
+Route::get('/lang/{locale}', function (string $locale) {
+    $supported = ['pt_BR', 'en', 'es'];
+
+    if (in_array($locale, $supported)) {
+        Session::put('locale', $locale);
+    }
+
+    return redirect()->back();
+})->name('lang.switch');
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)->name('verification.notice');
