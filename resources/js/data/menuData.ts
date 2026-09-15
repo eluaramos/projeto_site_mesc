@@ -12,11 +12,12 @@ export const menuData: MenuItem[] = [
   {
     id: 'mesc', label: 'O MESC',
     children: [
-      { id: 'historia', label: 'História', link: '#historia' },
+      { id: 'historia', label: 'História', link: '/sobre#historia' },
       {
         id: 'objetivos', label: 'Objetivos',
         children: [
-          { id: 'missao', label: 'Missão, Visão e Valores', link: '#missao' }
+          { id: 'missao', label: 'Missão, Visão e Valores', link: '/sobre#missao' },
+          { id: 'obj-lista', label: 'Objetivos do Programa', link: '/sobre#objetivos' }
         ]
       },
       {
@@ -34,7 +35,7 @@ export const menuData: MenuItem[] = [
           }
         ]
       },
-      { id: 'publico', label: 'Público-Alvo e Perfil do Egresso', link: '#publico' },
+      { id: 'publico', label: 'Público-Alvo e Perfil do Egresso', link: '/sobre#publico' },
       { id: 'planejamento', label: 'Planejamento Estratégico (avaliar necessidade da página)', link: '#planejamento' }
     ]
   },

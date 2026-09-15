@@ -440,10 +440,10 @@ h1, h2, h3, h4, h5, h6, .serif-title {
   align-items: flex-start;
 }
 
-.contact-info-item i {
-  font-size: 1.3rem;
+.contact-info-item svg {
   color: var(--uff-highlight);
   margin-top: 3px;
+  flex-shrink: 0;
 }
 
 .contact-info-item p {
