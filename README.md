@@ -21,7 +21,7 @@ Este projeto está configurado para ser executado em um ambiente isolado utiliza
 *   Extensão [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) instalada no VS Code.
 
 **Passo a passo:**
-
+0.  Caso seja a primeira vez rodando após um clone, configure o ambiente (Passo 3 - Como Rodar o Projeto Localmente (Manual))
 1.  Abra a pasta do projeto no VS Code.
 2.  O VS Code exibirá uma notificação perguntando se deseja abrir a pasta no container. Clique em **"Reopen in Container"**.
     *   *Caso não apareça, clique no ícone azul no canto inferior esquerdo e selecione "Reopen in Container".*
