@@ -9,6 +9,40 @@ interface MenuItem {
     children?: MenuItem[];
 }
 
+const normalizeLabel = (value: string) =>
+    value
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim()
+        .toLowerCase();
+
+const headerMenuData: MenuItem[] = (menuData as MenuItem[]).map((item) => {
+    const isPeopleMenu =
+        normalizeLabel(item.label) === 'pessoas' ||
+        ['pessoas', 'people'].includes(normalizeLabel(item.id));
+
+    if (!isPeopleMenu) {
+        return item;
+    }
+
+    return {
+        ...item,
+        link: undefined,
+        children: [
+            {
+                id: 'docentes',
+                label: 'Docentes',
+                link: '/pessoas/docentes',
+            },
+            {
+                id: 'discentes',
+                label: 'Discentes',
+                link: '/pessoas/discentes',
+            },
+        ],
+    };
+});
+
 const Header: React.FC = () => {
     const [activeTopId, setActiveTopId] = useState<string | null>(null);
     const [activeSubId, setActiveSubId] = useState<string | null>(null);
@@ -62,7 +96,7 @@ const Header: React.FC = () => {
                 onMouseLeave={closeAll}
             >
                 <div className="mx-auto flex max-w-7xl flex-wrap justify-center">
-                    {(menuData as MenuItem[]).map((topItem) => (
+                    {headerMenuData.map((topItem) => (
                         <div
                             key={topItem.id}
                             className="relative"
