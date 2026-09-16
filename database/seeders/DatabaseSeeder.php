@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\PessoasSeeder;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
