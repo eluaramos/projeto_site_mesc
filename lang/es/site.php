@@ -31,10 +31,10 @@ return [
         'news_all' => 'Ver todas',
         'events_title' => 'Agenda',
         'events_all' => 'Ver Calendario Completo',
-        'labs_title' => 'Laboratorios e Investigación',
-        'labs_subtitle' => 'Infraestructura de vanguardia para el desarrollo de soluciones tecnológicas.',
         'read_more' => 'Leer más',
         'learn_more' => 'Saber más',
+        'labs_title' => 'Laboratorios e Investigación',
+        'labs_subtitle' => 'Infraestructura de vanguardia para el desarrollo de soluciones tecnológicas.',
     ],
     'gateway' => [
         'future_students' => 'Futuros Estudiantes',

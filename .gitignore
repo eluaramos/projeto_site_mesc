@@ -94,4 +94,4 @@ Thumbs.db
 # Git worktrees
 # =========================
 
-/.worktrees/
+# Git worktrees used for isolated feature work

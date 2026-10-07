@@ -1,6 +1,10 @@
+import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { menuData } from '../data/menuData';
 import LanguageSwitcher from './LanguageSwitcher';
+import { useTranslation } from '../hooks/useTranslation';
+
+
 
 interface MenuItem {
     id: string;
@@ -9,44 +13,16 @@ interface MenuItem {
     children?: MenuItem[];
 }
 
-const normalizeLabel = (value: string) =>
-    value
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .trim()
-        .toLowerCase();
-
-const headerMenuData: MenuItem[] = (menuData as MenuItem[]).map((item) => {
-    const isPeopleMenu =
-        normalizeLabel(item.label) === 'pessoas' ||
-        ['pessoas', 'people'].includes(normalizeLabel(item.id));
-
-    if (!isPeopleMenu) {
-        return item;
-    }
-
-    return {
-        ...item,
-        link: undefined,
-        children: [
-            {
-                id: 'docentes',
-                label: 'Docentes',
-                link: '/pessoas/docentes',
-            },
-            {
-                id: 'discentes',
-                label: 'Discentes',
-                link: '/pessoas/discentes',
-            },
-        ],
-    };
-});
+interface PageProps {
+    auth: { user: { name: string; email: string; roles: string[] } | null };
+    [key: string]: unknown;
+}
 
 const Header: React.FC = () => {
     const [activeTopId, setActiveTopId] = useState<string | null>(null);
     const [activeSubId, setActiveSubId] = useState<string | null>(null);
     const [activeGrandId, setActiveGrandId] = useState<string | null>(null);
+    const { t } = useTranslation();
 
     const closeAll = () => {
         setActiveTopId(null);
@@ -56,7 +32,7 @@ const Header: React.FC = () => {
 
     return (
         <header className="relative z-30 w-full bg-white shadow-sm">
-            {/* BARRA SUPERIOR: logo + títulos + idioma */}
+            {/* BARRA SUPERIOR: logo + títulos + idioma + auth */}
             <div className="mx-auto max-w-7xl px-4 py-4">
                 <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
                     <div className="flex flex-col items-center gap-4 md:flex-row md:text-left">
@@ -84,8 +60,11 @@ const Header: React.FC = () => {
                             </h2>
                         </div>
                     </div>
-                    <div className="flex items-center">
+
+                    {/* Idioma + Auth */}
+                    <div className="flex items-center gap-4">
                         <LanguageSwitcher />
+                        <AuthNav />
                     </div>
                 </div>
             </div>
@@ -96,7 +75,7 @@ const Header: React.FC = () => {
                 onMouseLeave={closeAll}
             >
                 <div className="mx-auto flex max-w-7xl flex-wrap justify-center">
-                    {headerMenuData.map((topItem) => (
+                    {(menuData as MenuItem[]).map((topItem) => (
                         <div
                             key={topItem.id}
                             className="relative"
@@ -257,5 +236,38 @@ const Header: React.FC = () => {
         </header>
     );
 };
+
+
+function AuthNav() {
+    const { auth } = usePage<PageProps>().props;
+    const user = auth?.user;
+
+    if (user) {
+        return (
+            <div className="flex items-center gap-3">
+                <span className="text-xs text-gray-500">{user.name}</span>
+                <Link
+                    href="/logout"
+                    method="post"
+                    as="button"
+                    className="rounded-md px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90"
+                    style={{ backgroundColor: 'var(--uff-dark-blue)' }}
+                >
+                    Sair
+                </Link>
+            </div>
+        );
+    }
+
+    return (
+        
+            <a href="/login"
+            className="rounded-md px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90"
+            style={{ backgroundColor: 'var(--uff-highlight)' }}
+        >
+            Entrar
+        </a>
+    );
+}
 
 export default Header;

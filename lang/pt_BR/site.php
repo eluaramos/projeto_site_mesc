@@ -31,10 +31,10 @@ return [
         'news_all' => 'Ver todas',
         'events_title' => 'Agenda',
         'events_all' => 'Ver Calendário Completo',
-        'labs_title' => 'Laboratórios e Pesquisa',
-        'labs_subtitle' => 'Infraestrutura de ponta para o desenvolvimento de soluções tecnológicas.',
         'read_more' => 'Leia mais',
         'learn_more' => 'Saiba mais',
+        'labs_title' => 'Laboratórios e Pesquisa',
+        'labs_subtitle' => 'Infraestrutura de ponta para o desenvolvimento de soluções tecnológicas.',
     ],
     'gateway' => [
         'future_students' => 'Futuros Alunos',
