@@ -64,21 +64,9 @@ export const menuData: MenuItem[] = [
   {
     id: 'pessoas', label: 'PESSOAS',
     children: [
-      {
-        id: 'docentes', label: 'Docentes',
-        children: [
-          { id: 'quad-princ', label: 'Quadro Principal', link: '#quad-princ' },
-          { id: 'quad-apoio', label: 'Quadro de Apoio', link: '#quad-apoio' }
-        ]
-      },
+      { id: 'docentes', label: 'Docentes', link: '/pessoas/docentes' },
       { id: 'taes', label: 'Técnicos-Administrativos', link: '#taes' },
-      {
-        id: 'discentes', label: 'Discentes',
-        children: [
-          { id: 'ativos', label: 'Ativos', link: '#ativos' },
-          { id: 'concluintes', label: 'Concluintes', link: '#concluintes' }
-        ]
-      }
+      { id: 'discentes', label: 'Discentes', link: '/pessoas/discentes' }
     ]
   },
   {

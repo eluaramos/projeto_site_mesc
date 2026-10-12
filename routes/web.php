@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\PessoasController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
@@ -23,6 +24,12 @@ Route::get('/sobre', function () {
 Route::get('/contato', function () {
     return Inertia::render('Contato');
 });
+
+Route::get('/pessoas/docentes', [PessoasController::class, 'docentes'])
+    ->name('pessoas.docentes');
+
+Route::get('/pessoas/discentes', [PessoasController::class, 'discentes'])
+    ->name('pessoas.discentes');
 
 Route::get('/lang/{locale}', function (string $locale) {
     $supported = ['pt_BR', 'en', 'es'];
