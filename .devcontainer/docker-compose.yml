@@ -1,0 +1,5 @@
+services:
+  laravel.test:
+    # Build the project image first; avoid the temporary Dockerfile generated
+    # by Dev Containers, which Docker Bake blocks outside the build context.
+    build: !reset null

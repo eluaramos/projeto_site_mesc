@@ -2,7 +2,6 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { menuData } from '../data/menuData';
 import LanguageSwitcher from './LanguageSwitcher';
-import { useTranslation } from '../hooks/useTranslation';
 
 
 
@@ -22,7 +21,6 @@ const Header: React.FC = () => {
     const [activeTopId, setActiveTopId] = useState<string | null>(null);
     const [activeSubId, setActiveSubId] = useState<string | null>(null);
     const [activeGrandId, setActiveGrandId] = useState<string | null>(null);
-    const { t } = useTranslation();
 
     const closeAll = () => {
         setActiveTopId(null);

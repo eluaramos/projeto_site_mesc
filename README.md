@@ -26,7 +26,9 @@ Este projeto está configurado para ser executado em um ambiente isolado utiliza
 2.  O VS Code exibirá uma notificação perguntando se deseja abrir a pasta no container. Clique em **"Reopen in Container"**.
     *   *Caso não apareça, clique no ícone azul no canto inferior esquerdo e selecione "Reopen in Container".*
 3.  O Docker irá baixar as imagens e configurar o ambiente automaticamente (isso pode demorar alguns minutos na primeira vez).
-4.  Após a inicialização, o container já terá o banco de dados SQLite configurado e as dependências instaladas.
+    *   No WSL, abra a pasta pelo terminal Ubuntu com `code .` e selecione **Dev Containers: Reopen in Container**.
+    *   O `initializeCommand` constrói a imagem com o Compose principal. O override `.devcontainer/docker-compose.yml` usa essa imagem sem repetir o build, evitando o erro `additional privileges requested: fs.read=.../Dockerfile-with-features` do Docker Bake ao ler o Dockerfile temporário do VS Code.
+4.  Após a inicialização, o container terá as dependências instaladas e executará as migrations e os seeders. O `.env` deve usar o PostgreSQL do Compose: `DB_CONNECTION=pgsql`, `DB_HOST=postgres`, `DB_PORT=5432` e as credenciais de `.env.example`.
 5.  Inicie o servidor de desenvolvimento:
     ```bash
     composer run dev
