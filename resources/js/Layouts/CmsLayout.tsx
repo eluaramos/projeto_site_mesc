@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowUpRight, FileText, LayoutDashboard, LogOut, Users } from 'lucide-react';
+import { ArrowUpRight, FileText, LayoutDashboard, LogOut, Newspaper, Users } from 'lucide-react';
 import { type ReactNode } from 'react';
 import '../../css/cms.css';
 
@@ -10,9 +10,11 @@ export default function CmsLayout({
 }: {
     children: ReactNode;
     title: string;
-    section?: 'dashboard' | 'pages' | 'users';
+    section?: 'dashboard' | 'pages' | 'users' | 'news' | 'news';
 }) {
-    const { auth } = usePage<{ auth: { user: { name: string; roles: string[]; can_view_pages: boolean; is_admin: boolean } | null } }>().props;
+    const { auth } = usePage<{
+        auth: { user: { name: string; roles: string[]; can_view_pages: boolean; can_view_news: boolean; is_admin: boolean } | null };
+    }>().props;
     const canView = auth.user?.can_view_pages;
     return (
         <div className="cms-shell min-h-screen bg-[var(--uff-page-background)] text-[var(--uff-text-dark)]">
@@ -55,6 +57,19 @@ export default function CmsLayout({
                             Páginas
                         </Link>
                     )}
+                    {auth.user?.can_view_news && (
+                        <Link
+                            href="/cms/news"
+                            aria-current={section === 'news' ? 'page' : undefined}
+                            className={
+                                'flex items-center gap-3 rounded-lg px-4 py-3 text-sm ' +
+                                (section === 'news' ? 'cms-nav-active font-semibold' : 'cms-nav-link text-slate-200')
+                            }
+                        >
+                            <Newspaper size={18} />
+                            Notícias
+                        </Link>
+                    )}
                     {auth.user?.is_admin && (
                         <Link
                             href="/cms/users"
@@ -83,7 +98,7 @@ export default function CmsLayout({
                     <span className="text-sm text-[var(--uff-text-muted)]">
                         Administração <span className="mx-2 text-slate-300">/</span>{' '}
                         <span className="text-[var(--uff-text-dark)]">
-                            {section === 'pages' ? 'Páginas' : section === 'users' ? 'Usuários' : 'Visão geral'}
+                            {section === 'pages' ? 'Páginas' : section === 'users' ? 'Usuários' : section === 'news' ? 'Notícias' : 'Visão geral'}
                         </span>
                     </span>
                     <div className="flex items-center gap-4">

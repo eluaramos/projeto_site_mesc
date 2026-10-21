@@ -34,6 +34,9 @@ class PageBlocks implements ValidationRule
         if (! is_string($value) || strlen($value) > 2048 || preg_match('/[\\s\\\\\\\\]/', $value)) {
             return false;
         }
+        if ($image && str_starts_with($value, '/images/') && ! str_contains($value, '..')) {
+            return true;
+        }
         if (! $image && preg_match('#^/(?!/)#', $value)) {
             return true;
         }
@@ -49,8 +52,66 @@ class PageBlocks implements ValidationRule
             'link' => $this->text($block['text'] ?? null) && $this->url($block['url'] ?? null),
             'image' => $this->url($block['url'] ?? null, true) && $this->text($block['alt'] ?? null) && is_string($block['caption'] ?? null),
             'table' => $this->table($block),
+            'card', 'cards', 'carousel', 'stats', 'banner' => $this->layout($block),
             default => false,
         };
+    }
+
+    private function layout(array $block): bool
+    {
+        $type = $block['type'];
+        $items = $block['items'] ?? null;
+        $limit = in_array($type, ['card', 'banner'], true) ? 1 : ($type === 'carousel' ? 10 : 12);
+        if (! is_array($items) || ! array_is_list($items) || count($items) < 1 || count($items) > $limit) {
+            return false;
+        }
+        if (isset($block['title']) && (! is_string($block['title']) || mb_strlen($block['title']) > 200)) {
+            return false;
+        }
+        if ($type === 'cards' && ! in_array($block['columns'] ?? 3, [2, 3, 4], true)) {
+            return false;
+        }
+        foreach ($items as $item) {
+            if (! is_array($item) || ! $this->text($item['title'] ?? null) || mb_strlen($item['title']) > 200) {
+                return false;
+            }
+            if ($type === 'stats') {
+                if (! $this->text($item['value'] ?? null) || mb_strlen($item['value']) > 50) {
+                    return false;
+                }
+
+                continue;
+            }
+            foreach (['text', 'image', 'alt', 'url', 'button', 'icon'] as $field) {
+                if (isset($item[$field]) && ! is_string($item[$field])) {
+                    return false;
+                }
+            }
+            if (in_array($type, ['card', 'cards'], true) && ! $this->text($item['text'] ?? null)) {
+                return false;
+            }
+            if (isset($item['text']) && mb_strlen($item['text']) > 20000) {
+                return false;
+            }
+            $hasImage = ! empty($item['image']);
+            if (in_array($type, ['carousel', 'banner'], true) && ! $hasImage) {
+                return false;
+            }
+            if ($hasImage && (! $this->url($item['image'], true) || ! $this->text($item['alt'] ?? null))) {
+                return false;
+            }
+            if (! empty($item['url']) && ! $this->url($item['url'])) {
+                return false;
+            }
+            if (in_array($type, ['carousel', 'banner'], true) && ! empty($item['url']) && ! $this->text($item['button'] ?? null)) {
+                return false;
+            }
+            if (! in_array($item['icon'] ?? '', ['', 'book', 'target', 'lightbulb', 'graduation', 'flask', 'briefcase', 'users', 'search'], true)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function table(array $block): bool

@@ -1,5 +1,10 @@
+import { PortalBlock, type PortalItem } from '../PortalBlocks';
+import { safeUrl } from './contentUrls';
 export type Block = {
-    type: 'paragraph' | 'heading' | 'quote' | 'list' | 'link' | 'image' | 'table';
+    type: 'paragraph' | 'heading' | 'quote' | 'list' | 'link' | 'image' | 'table' | 'card' | 'cards' | 'carousel' | 'stats' | 'banner';
+    title?: string;
+    items?: PortalItem[];
+    columns?: number;
     text?: string;
     ordered?: boolean;
     url?: string;
@@ -15,6 +20,11 @@ export const blockLabels: Record<Block['type'], string> = {
     link: 'Link',
     image: 'Imagem',
     table: 'Tabela',
+    card: 'Card',
+    cards: 'Grade de cards',
+    carousel: 'Carrossel',
+    stats: 'Indicadores',
+    banner: 'Banner',
 };
 export function readBlocks(body: string, format?: string): Block[] {
     if (format === 'blocks') {
@@ -27,23 +37,18 @@ export function readBlocks(body: string, format?: string): Block[] {
     }
     return [{ type: 'paragraph', text: body }];
 }
-export function safeUrl(value = '', image = false): string | undefined {
-    if (/[\s\\]/.test(value)) return undefined;
-    if (!image && /^\/(?!\/)/.test(value)) return value;
-    try {
-        const url = new URL(value);
-        if (url.protocol === 'https:') return value;
-    } catch {
-        /* incomplete URL in preview */
-    }
-    return undefined;
-}
 export function ContentBlocks({ body, format }: { body: string; format?: string }) {
     if (format !== 'blocks') return <div className="leading-8 break-words whitespace-pre-wrap">{body}</div>;
     return (
         <div className="cms-content space-y-6 break-words">
             {readBlocks(body, format).map((block, index) => {
                 switch (block.type) {
+                    case 'card':
+                    case 'cards':
+                    case 'carousel':
+                    case 'stats':
+                    case 'banner':
+                        return <PortalBlock key={index} type={block.type} items={block.items ?? []} title={block.title} columns={block.columns} />;
                     case 'heading':
                         return (
                             <h2 key={index} className="pt-4 text-2xl font-bold">
