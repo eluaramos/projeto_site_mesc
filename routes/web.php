@@ -6,12 +6,23 @@ use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PessoasController;
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
+
+Route::get('/paginas/{slug}', [PageController::class, 'legacy'])->name('pages.legacy');
+Route::middleware('auth')->prefix('cms')->name('cms.')->group(function () {
+    Route::middleware(EnsureAdmin::class)->group(function () {
+        Route::resource('users', UserController::class)->except('show');
+    });
+    Route::resource('pages', PageController::class)->except(['show', 'destroy']);
+    Route::post('/pages/{page}/transition', [PageController::class, 'transition'])->name('pages.transition');
+});
 
 Route::get('/', function () {
     return Inertia::render('Home');
@@ -41,10 +52,10 @@ Route::get('/lang/{locale}', function (string $locale) {
     return redirect()->back();
 })->name('lang.switch');
 
+Route::match(['get', 'post'], '/register', fn () => abort(404));
+
 // Rotas de autenticação
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
@@ -88,3 +99,6 @@ Route::middleware('auth')->group(function () {
         })->name('dashboard');
     });
 });
+
+// As rotas do portal têm precedência sobre páginas do CMS.
+Route::get('/{slug}', [PageController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('pages.show');
