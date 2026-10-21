@@ -1,0 +1,177 @@
+/* Hierarquia editorial inspirada na notícia de referência; cores e fontes do MESC. */
+.news-story {
+    background: var(--uff-white);
+    color: var(--uff-text-dark);
+}
+.news-story-main {
+    flex: 1;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 0 72px;
+}
+.news-story-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 44px;
+    color: var(--uff-text-muted);
+    font-size: 0.8rem;
+}
+.news-story-breadcrumb a {
+    color: var(--uff-dark-blue);
+}
+.news-story-breadcrumb a:hover {
+    text-decoration: underline;
+}
+.news-story-heading {
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--uff-border);
+}
+.news-story-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    color: var(--uff-highlight);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.news-story-heading h1 {
+    max-width: 1100px;
+    margin: 0;
+    color: var(--uff-dark-blue);
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.7vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+}
+.news-story-summary {
+    max-width: 1000px;
+    margin: 24px 0 28px;
+    color: var(--uff-text-muted);
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+.news-story-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    color: var(--uff-text-muted);
+    font-size: 0.8rem;
+}
+.news-story-meta > span,
+.news-story-category,
+.news-story-end a {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+.news-story-meta svg,
+.news-story-category svg {
+    color: var(--uff-highlight);
+    flex-shrink: 0;
+}
+.news-story-cover {
+    max-width: 1000px;
+    margin: 36px auto 44px;
+    background: var(--uff-light-gray);
+}
+.news-story-cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.news-story-content {
+    width: 100%;
+    max-width: 850px;
+    margin: 44px auto 0;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+.news-story-content .cms-content > p {
+    line-height: 1.9;
+}
+.news-story-content .cms-content > h2 {
+    margin-top: 36px;
+    padding-top: 0;
+    color: var(--uff-dark-blue);
+    font-family: var(--font-serif);
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+    line-height: 1.4;
+}
+.news-story-content .cms-content > figure {
+    margin: 32px 0;
+}
+.news-story-content .cms-content > figure > img {
+    max-height: none;
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+}
+.news-story-content .cms-content > figure > figcaption {
+    text-align: left;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--uff-text-muted);
+}
+.news-story-content blockquote {
+    border-left-color: var(--uff-highlight);
+}
+.news-story-end {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    max-width: 850px;
+    margin: 48px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--uff-border);
+    font-size: 0.85rem;
+}
+.news-story-category {
+    color: var(--uff-text-muted);
+}
+.news-story-end a {
+    color: var(--uff-dark-blue);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+.news-story-main a:focus-visible {
+    outline: 3px solid var(--uff-highlight);
+    outline-offset: 4px;
+}
+@media (max-width: 600px) {
+    .news-story-main {
+        padding-top: 20px;
+        padding-bottom: 44px;
+    }
+    .news-story-breadcrumb {
+        margin-bottom: 28px;
+    }
+    .news-story-summary {
+        margin-top: 18px;
+    }
+    .news-story-cover {
+        margin: 24px auto 28px;
+    }
+    .news-story-content {
+        margin-top: 28px;
+        font-size: 1rem;
+    }
+    .news-story-end {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
