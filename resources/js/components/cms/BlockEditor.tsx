@@ -25,7 +25,13 @@ export default function BlockEditor({ initial, onChange, disabled }: { initial: 
     const focusKey = useRef<number | null>(null);
     function commit(value: EditorBlock[]) {
         setBlocks(value);
-        onChange(value.map(({ key: _key, ...block }) => block));
+        onChange(
+            value.map((item) => {
+                const block: Block & { key?: number } = { ...item };
+                delete block.key;
+                return block;
+            }),
+        );
     }
     function update(key: number, change: Partial<Block>) {
         commit(blocks.map((block) => (block.key === key ? { ...block, ...change } : block)));
