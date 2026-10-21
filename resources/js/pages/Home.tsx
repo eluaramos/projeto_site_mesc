@@ -8,7 +8,7 @@ import {
     Target,
     UserCheck,
 } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -43,13 +43,13 @@ function Carousel({ slides }: { slides: CarouselSlide[] }) {
     const [paused, setPaused] = useState(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const goTo = (index: number) => setCurrent((index + slides.length) % slides.length);
+    const goTo = useCallback((index: number) => setCurrent((index + slides.length) % slides.length), [slides.length]);
 
     useEffect(() => {
         if (paused) return;
         timerRef.current = setTimeout(() => goTo(current + 1), 5000);
         return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-    }, [current, paused]);
+    }, [current, paused, goTo]);
 
     return (
         <div
