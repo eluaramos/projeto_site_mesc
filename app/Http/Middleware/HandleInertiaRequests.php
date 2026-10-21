@@ -29,6 +29,9 @@ class HandleInertiaRequests extends Middleware
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
                     'roles' => $request->user()->getRoleNames(),
+                    'is_admin' => $request->user()->hasRole('admin'),
+                    'can_view_pages' => $request->user()->can('paginas.ver'),
+                    'can_edit_pages' => $request->user()->can('paginas.editar'),
                 ] : null,
             ],
         ];
