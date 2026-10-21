@@ -16,6 +16,9 @@ class RoleSeeder extends Seeder
 
         // Permissions
         $permissions = [
+            'paginas.ver',
+            'paginas.editar',
+            'paginas.publicar',
             // Notícias
             'noticias.ver',
             'noticias.criar',
@@ -53,6 +56,9 @@ class RoleSeeder extends Seeder
         // Role: admin — acesso total
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $admin->syncPermissions(Permission::all());
+
+        Role::firstOrCreate(['name' => 'editor'])->syncPermissions(['paginas.ver', 'paginas.editar']);
+        Role::firstOrCreate(['name' => 'revisor'])->syncPermissions(['paginas.ver', 'paginas.publicar']);
 
         // Role: colaborador — acesso restrito
         $colaborador = Role::firstOrCreate(['name' => 'colaborador']);

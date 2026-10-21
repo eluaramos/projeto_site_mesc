@@ -7,10 +7,15 @@
   --uff-text-dark: #333333;
   --uff-light-gray: #f8f9fa;
   --font-serif: 'Lora', serif;
+  --uff-page-background: #f4f4f4;
+  --uff-text-muted: #666;
+  --uff-border: #ddd;
+  --uff-control-radius: 4px;
+  --uff-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 body {
-    background: #f4f4f4;
+    background: var(--uff-page-background);
     margin: 0;
     color: var(--uff-text-dark);
 }

@@ -242,8 +242,15 @@ function AuthNav() {
 
     if (user) {
         return (
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-3">
                 <span className="text-xs text-gray-500">{user.name}</span>
+                <Link
+                    href="/dashboard"
+                    className="rounded-md px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2"
+                    style={{ backgroundColor: 'var(--uff-highlight)', outlineColor: 'var(--uff-dark-blue)' }}
+                >
+                    Dashboard
+                </Link>
                 <Link
                     href="/logout"
                     method="post"
