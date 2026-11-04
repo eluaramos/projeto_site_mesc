@@ -34,7 +34,7 @@ Route::middleware('auth')->prefix('cms')->name('cms.')->group(function () {
     Route::post('/pages/{page}/transition', [PageController::class, 'transition'])->name('pages.transition');
 });
 
-Route::get('/', HomeController::class);
+Route::get('/', HomeController::class)->name('portal.home');
 Route::get('/noticias', [NewsController::class, 'publicIndex'])->name('news.index');
 Route::get('/noticias/{news}/capa/{media}', [MediaController::class, 'publishedCover'])->whereNumber('news')->whereUuid('media')->name('news.cover');
 Route::get('/noticias/{slug}', [NewsController::class, 'show'])->name('news.show');
@@ -44,11 +44,11 @@ Route::get('/documentos/{kind}/{id}/{media}', [MediaController::class, 'publishe
 
 Route::get('/sobre', function () {
     return Inertia::render('Sobre');
-});
+})->name('portal.about');
 
 Route::get('/contato', function () {
     return Inertia::render('Contato');
-});
+})->name('portal.contact');
 
 Route::get('/pessoas/docentes', [PessoasController::class, 'docentes'])
     ->name('pessoas.docentes');
