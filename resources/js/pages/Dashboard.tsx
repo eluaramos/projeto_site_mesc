@@ -1,7 +1,9 @@
 import { Link, usePage } from '@inertiajs/react';
 import { ArrowRight, FileText, Plus, ShieldCheck } from 'lucide-react';
 import CmsLayout from '../Layouts/CmsLayout';
-export default function Dashboard() {
+type ReviewItem = { kind: 'pages' | 'news'; count: number; url: string };
+
+export default function Dashboard({ reviewQueue }: { reviewQueue: ReviewItem[] }) {
     const { auth } = usePage<{
         auth: {
             user: {
@@ -22,6 +24,24 @@ export default function Dashboard() {
             <p className="mb-2 text-xs font-semibold tracking-widest text-[var(--uff-highlight)] uppercase">Gestão do portal MESC</p>
             <h1 className="text-3xl font-bold tracking-tight">Olá, {auth.user.name.split(' ')[0]}.</h1>
             <p className="mt-3 text-[var(--uff-text-muted)]">Este é o seu espaço para cuidar das páginas institucionais.</p>
+            {reviewQueue.length > 0 && (
+                <section className="cms-card mt-6 border-l-4 border-l-[var(--uff-highlight)] p-6" aria-labelledby="review-queue-title">
+                    <h2 id="review-queue-title" className="text-xl font-semibold">
+                        Aguardando revisão
+                    </h2>
+                    <ul className="mt-4 flex flex-wrap gap-3">
+                        {reviewQueue.map(({ kind, count, url }) => (
+                            <li key={kind}>
+                                <Link href={url} className="cms-secondary">
+                                    {count} {kind === 'pages' ? (count === 1 ? 'página' : 'páginas') : count === 1 ? 'notícia' : 'notícias'} em
+                                    revisão
+                                    <ArrowRight size={16} aria-hidden="true" />
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
             <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
                 <section className="cms-card p-7">
                     <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--uff-light-gray)] text-[var(--uff-dark-blue)]">
