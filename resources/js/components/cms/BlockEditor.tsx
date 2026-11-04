@@ -1,3 +1,4 @@
+import { usePage } from '@inertiajs/react';
 import { ArrowDown, ArrowUp, Copy, Plus, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { type PortalVariant } from '../PortalBlocks';
@@ -22,6 +23,7 @@ function newBlock(type: Block['type']): Block {
     return { type, text: '' };
 }
 export default function BlockEditor({ initial, onChange, disabled }: { initial: Block[]; onChange: (blocks: Block[]) => void; disabled: boolean }) {
+    const { pdfOptions } = usePage<{ pdfOptions: { id: number; title: string; original_name: string; size: number }[] }>().props;
     const nextKey = useRef(initial.length);
     const [blocks, setBlocks] = useState<EditorBlock[]>(() => initial.map((block, key) => ({ ...block, key })));
     const [addType, setAddType] = useState<Block['type']>('paragraph');
@@ -102,6 +104,35 @@ export default function BlockEditor({ initial, onChange, disabled }: { initial: 
                         </div>
                     </div>
                     <div className="space-y-4 p-5">
+                        {block.type === 'download' && (
+                            <>
+                                <div>
+                                    <label htmlFor={'pdf-' + block.key}>Documento PDF</label>
+                                    <select
+                                        id={'pdf-' + block.key}
+                                        value={block.mediaId ?? ''}
+                                        onChange={(event) => update(block.key, { mediaId: Number(event.target.value) || undefined })}
+                                    >
+                                        <option value="">Selecione um PDF da biblioteca</option>
+                                        {pdfOptions.map((pdf) => (
+                                            <option key={pdf.id} value={pdf.id}>
+                                                {pdf.title} — {pdf.original_name} ({Math.ceil(pdf.size / 1024)} KB)
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label htmlFor={'download-text-' + block.key}>Texto do link (opcional)</label>
+                                    <input
+                                        id={'download-text-' + block.key}
+                                        value={block.text ?? ''}
+                                        onChange={(event) => update(block.key, { text: event.target.value })}
+                                        placeholder="Baixar documento"
+                                    />
+                                </div>
+                                {!pdfOptions.length && <p>Nenhum PDF disponível na biblioteca.</p>}
+                            </>
+                        )}
                         {['card', 'cards', 'carousel', 'stats', 'banner'].includes(block.type) && (
                             <LayoutBlockEditor
                                 id={block.key}

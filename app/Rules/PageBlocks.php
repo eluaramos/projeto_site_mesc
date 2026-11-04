@@ -2,21 +2,38 @@
 
 namespace App\Rules;
 
+use App\Models\Media;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class PageBlocks implements ValidationRule
 {
+    public function __construct(private bool $allowEmptyBody = false) {}
+
+    public static function isBlankParagraph(mixed $block): bool
+    {
+        return is_array($block) && ($block['type'] ?? null) === 'paragraph'
+            && is_string($block['text'] ?? null) && trim($block['text']) === '';
+    }
+
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $blocks = is_string($value) ? json_decode($value, true) : null;
-        if (! is_array($blocks) || ! array_is_list($blocks) || count($blocks) < 1 || count($blocks) > 100) {
+        if (! is_array($blocks) || ! array_is_list($blocks) || (! $this->allowEmptyBody && count($blocks) < 1) || count($blocks) > 100) {
             $fail('Adicione de 1 a 100 blocos de conteúdo.');
 
             return;
         }
         foreach ($blocks as $block) {
+            if ($this->allowEmptyBody && self::isBlankParagraph($block)) {
+                continue;
+            }
             if (! is_array($block) || ! $this->validBlock($block)) {
+                if (($block['type'] ?? null) === 'download') {
+                    $fail('Selecione um PDF válido da biblioteca e revise o texto do link de download.');
+
+                    return;
+                }
                 $fail('Revise os blocos: preencha os textos, use links HTTPS ou internos e descreva as imagens.');
 
                 return;
@@ -51,6 +68,10 @@ class PageBlocks implements ValidationRule
             'list' => $this->text($block['text'] ?? null) && is_bool($block['ordered'] ?? null),
             'link' => $this->text($block['text'] ?? null) && $this->url($block['url'] ?? null),
             'image' => $this->url($block['url'] ?? null, true) && $this->text($block['alt'] ?? null) && is_string($block['caption'] ?? null),
+            'download' => is_string($block['text'] ?? '')
+                && mb_strlen($block['text'] ?? '') <= 20000
+                && is_int($block['mediaId'] ?? null)
+                && Media::whereKey($block['mediaId'])->where('mime', 'application/pdf')->exists(),
             'table' => $this->table($block),
             'card', 'cards', 'carousel', 'stats', 'banner' => $this->layout($block),
             default => false,

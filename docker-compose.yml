@@ -19,6 +19,8 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '.:/var/www/html'
+            - 'cms-media:/var/www/html/storage/app/cms-media'
+            - './.devcontainer/cms-upload.ini:/etc/php/8.3/cli/conf.d/99-cms-upload.ini:ro'
         networks:
             - sail
         depends_on:
@@ -51,5 +53,7 @@ networks:
         driver: bridge
 
 volumes:
+    cms-media:
+        driver: local
     postgres-data:
         driver: local

@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PessoasController;
@@ -24,13 +25,21 @@ Route::middleware('auth')->prefix('cms')->name('cms.')->group(function () {
     });
     Route::resource('news', NewsController::class)->parameters(['news' => 'page'])->except(['show', 'destroy']);
     Route::post('/news/{page}/transition', [NewsController::class, 'transition'])->name('news.transition');
+    Route::get('/media', [MediaController::class, 'index'])->name('media.index');
+    Route::post('/media', [MediaController::class, 'store'])->name('media.store');
+    Route::get('/media/{media}/imagem', [MediaController::class, 'previewImage'])->whereUuid('media')->name('media.image');
+    Route::get('/media/{media}/download', [MediaController::class, 'download'])->whereUuid('media')->name('media.download');
     Route::resource('pages', PageController::class)->except(['show', 'destroy']);
     Route::post('/pages/{page}/transition', [PageController::class, 'transition'])->name('pages.transition');
 });
 
 Route::get('/', HomeController::class);
 Route::get('/noticias', [NewsController::class, 'publicIndex'])->name('news.index');
+Route::get('/noticias/{news}/capa/{media}', [MediaController::class, 'publishedCover'])->whereNumber('news')->whereUuid('media')->name('news.cover');
 Route::get('/noticias/{slug}', [NewsController::class, 'show'])->name('news.show');
+
+Route::get('/documentos/{kind}/{id}/{media}', [MediaController::class, 'published'])
+    ->whereIn('kind', ['pages', 'news'])->whereNumber('id')->whereUuid('media')->name('media.published');
 
 Route::get('/sobre', function () {
     return Inertia::render('Sobre');

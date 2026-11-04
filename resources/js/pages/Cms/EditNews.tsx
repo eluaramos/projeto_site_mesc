@@ -1,4 +1,4 @@
-import { Link, router, useForm } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowLeft, Check, Eye, FileText, Save, Send } from 'lucide-react';
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import CmsLayout from '../../Layouts/CmsLayout';
@@ -21,6 +21,7 @@ interface Page {
     summary: string;
     category: string;
     image: string | null;
+    cover_media_uuid?: string | null;
     image_alt: string | null;
     show_on_home: boolean;
 }
@@ -49,6 +50,7 @@ export default function EditNews({
     events: Event[];
 }) {
     const initial = useRef(readBlocks(page?.body ?? '', page?.body_format));
+    const { coverOptions } = usePage<{ coverOptions: { uuid: string; title: string; original_name: string }[] }>().props;
     const form = useForm({
         title: page?.title ?? '',
         slug: page?.slug ?? '',
@@ -58,6 +60,7 @@ export default function EditNews({
         summary: page?.summary ?? '',
         category: page?.category ?? '',
         image: page?.image ?? '',
+        cover_media_uuid: page?.cover_media_uuid ?? '',
         image_alt: page?.image_alt ?? '',
         show_on_home: page?.show_on_home ?? true,
     });
@@ -108,6 +111,7 @@ export default function EditNews({
             },
         );
     }
+    const coverPreview = form.data.cover_media_uuid ? '/cms/media/' + form.data.cover_media_uuid + '/imagem' : safeUrl(form.data.image, true);
     const disabled = busy || form.processing;
     const slugFromTitle = (title: string) =>
         title
@@ -209,6 +213,23 @@ export default function EditNews({
                                 />
                             </div>
                             <div>
+                                <label htmlFor="news-cover">Capa da biblioteca</label>
+                                <select
+                                    id="news-cover"
+                                    value={form.data.cover_media_uuid}
+                                    onChange={(e) => form.setData('cover_media_uuid', e.target.value)}
+                                >
+                                    <option value="">Usar endereço de imagem ou deixar sem capa</option>
+                                    {!coverOptions.some((file) => file.uuid === form.data.cover_media_uuid) && form.data.cover_media_uuid && (
+                                        <option value={form.data.cover_media_uuid}>Capa selecionada</option>
+                                    )}
+                                    {coverOptions.map((file) => (
+                                        <option key={file.uuid} value={file.uuid}>
+                                            {file.title} — {file.original_name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <p className="mt-2 text-xs">A imagem da biblioteca tem prioridade sobre o endereço abaixo.</p>
                                 <label htmlFor="news-image">Imagem de capa (HTTPS ou /images/...)</label>
                                 <input
                                     id="news-image"
@@ -222,7 +243,7 @@ export default function EditNews({
                                 <input
                                     id="news-image-alt"
                                     maxLength={1000}
-                                    required={!!form.data.image}
+                                    required={!!(form.data.image || form.data.cover_media_uuid)}
                                     value={form.data.image_alt}
                                     onChange={(e) => form.setData('image_alt', e.target.value)}
                                 />
@@ -297,10 +318,10 @@ export default function EditNews({
                             <h1 className="mb-8 text-3xl font-bold">{form.data.title || 'Título da notícia'}</h1>
                             <p className="mb-3 text-sm">{form.data.category}</p>
                             <p className="mb-6 text-lg">{form.data.summary}</p>
-                            {form.data.image && safeUrl(form.data.image, true) && (
+                            {coverPreview && (
                                 <img
                                     className="mb-6 max-h-80 w-full object-contain"
-                                    src={safeUrl(form.data.image, true)}
+                                    src={coverPreview}
                                     alt={form.data.image_alt}
                                     referrerPolicy="no-referrer"
                                 />
