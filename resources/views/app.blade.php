@@ -30,9 +30,12 @@
             </div>
         </div>
 
-        {{-- Barra do Governo Federal --}}
-        <div id="barra-brasil"></div>
-        <script defer src="//barra.brasil.gov.br/barra_2.0.js" type="text/javascript"></script>
+        @if ($page['props']['showGovernmentBar'] ?? false)
+            {{-- Barra do Governo Federal --}}
+            <div id="barra-brasil"></div>
+            <script defer src="//barra.brasil.gov.br/barra_2.0.js" type="text/javascript"></script>
+
+        @endif
 
         @inertia
     </body>

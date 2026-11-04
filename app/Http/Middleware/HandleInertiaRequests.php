@@ -13,7 +13,13 @@ class HandleInertiaRequests extends Middleware
 
     public function version(Request $request): ?string
     {
-        return parent::version($request);
+        // Switching shells requires fresh Blade HTML, not just new Inertia props.
+        return parent::version($request).($this->showsGovernmentBar($request) ? ':portal' : ':internal');
+    }
+
+    private function showsGovernmentBar(Request $request): bool
+    {
+        return $request->routeIs('portal.*', 'pessoas.*', 'news.index', 'news.show', 'pages.show');
     }
 
     public function share(Request $request): array
@@ -22,6 +28,7 @@ class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
+            'showGovernmentBar' => $this->showsGovernmentBar($request),
             'pdfOptions' => fn () => $request->routeIs('cms.pages.create', 'cms.pages.edit', 'cms.news.create', 'cms.news.edit')
                 && $request->user()?->can('midia.ver')
                 ? Media::where('mime', 'application/pdf')->latest('id')->get(['id', 'uuid', 'title', 'original_name', 'size'])
