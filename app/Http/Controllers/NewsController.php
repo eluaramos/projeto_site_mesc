@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Media;
 use App\Models\News;
 use App\Rules\PageBlocks;
 use App\Rules\PublicImageUrl;
@@ -105,7 +106,7 @@ class NewsController extends Controller
             }, 409, 'Transição indisponível. Atualize a página.');
             if ($action === 'publish') {
 
-                $page->published_content = $page->only(['title', 'summary', 'category', 'image', 'image_alt', 'show_on_home', 'body', 'body_format', 'locale']);
+                $page->published_content = $page->only(['title', 'summary', 'category', 'image', 'cover_media_uuid', 'image_alt', 'show_on_home', 'body', 'body_format', 'locale']);
                 $page->published_at = now();
                 $page->published_by = $request->user()->id;
             }
@@ -132,23 +133,34 @@ class NewsController extends Controller
 
         $page = News::where('slug', $slug)->whereNotNull('published_content')->firstOrFail();
 
-        return Inertia::render('Cms/PublicNews', ['content' => $page->published_content, 'publishedAt' => $page->published_at?->toIso8601String()]);
+        return Inertia::render('Cms/PublicNews', ['content' => $page->publicContent(), 'downloadUuids' => Media::downloadUuids($page->published_content), 'downloadBase' => '/documentos/news/'.$page->id, 'publishedAt' => $page->published_at?->toIso8601String()]);
     }
 
     private function validated(Request $request, ?News $page = null): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'title' => ['required', 'string', 'max:200'],
             'summary' => ['required', 'string', 'max:500'],
             'category' => ['required', 'string', 'max:80'],
             'image' => ['nullable', 'string', 'max:2048', new PublicImageUrl],
-            'image_alt' => ['nullable', 'required_with:image', 'string', 'max:1000'],
+            'cover_media_uuid' => ['nullable', 'uuid', Rule::exists('media', 'uuid')->whereIn('mime', Media::IMAGE_MIMES)],
+            'image_alt' => ['nullable', 'required_with:image,cover_media_uuid', 'string', 'max:1000'],
             'show_on_home' => ['required', 'boolean'],
             'slug' => ['required', 'string', 'max:160', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $page ? Rule::in([$page->slug]) : Rule::unique('news', 'slug')],
             'body_format' => ['sometimes', Rule::in(['text', 'blocks'])],
-            'body' => ['required', 'string', 'max:100000', ...($request->input('body_format', 'text') === 'blocks' ? [new PageBlocks] : [])],
+            'body' => ['required', 'string', 'max:100000', ...($request->input('body_format', 'text') === 'blocks' ? [new PageBlocks(allowEmptyBody: true)] : [])],
             'locale' => ['required', Rule::in(['pt_BR', 'en'])],
-        ]) + ['body_format' => 'text'];
+        ]) + ['body_format' => 'text', 'cover_media_uuid' => null];
+
+        if ($data['body_format'] === 'blocks') {
+            $blocks = json_decode($data['body'], true, flags: JSON_THROW_ON_ERROR);
+            $filtered = array_values(array_filter($blocks, fn ($block) => ! PageBlocks::isBlankParagraph($block)));
+            if ($filtered !== $blocks) {
+                $data['body'] = json_encode($filtered, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+        }
+
+        return $data;
     }
 
     private function record(News $page, Request $request, string $action): void

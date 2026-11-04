@@ -1,9 +1,13 @@
 <?php
 
+use App\Models\Media;
 use App\Models\News;
+use App\Models\Page;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function () {
@@ -90,4 +94,78 @@ test('colaborador preserva permissoes existentes de redacao sem poder publicar',
     $news = News::firstOrFail();
     $this->post("/cms/news/{$news->id}/transition", ['action' => 'publish'])->assertForbidden();
     $this->get('/dashboard')->assertInertia(fn (Assert $page) => $page->where('auth.user.can_view_news', true));
+});
+
+test('capa da biblioteca só fica pública na versão aprovada da notícia', function () {
+    $disk = Storage::fake('cms-media');
+    $make = function (string $name) use ($disk) {
+        $disk->put($name, 'imagem de teste');
+
+        return Media::create(['title' => $name, 'original_name' => $name, 'path' => $name, 'mime' => 'image/png', 'size' => 15]);
+    };
+    $first = $make('primeira.png');
+    $next = $make('segunda.png');
+    $editor = newsActor('editor');
+    $reviewer = newsActor('revisor');
+    $data = newsData(['image' => null, 'image_alt' => 'Capa', 'cover_media_uuid' => $first->uuid]);
+    $this->actingAs($editor)->post('/cms/news', [...$data, 'image_alt' => ''])->assertSessionHasErrors('image_alt');
+    $this->post('/cms/news', $data)->assertSessionHasNoErrors();
+    $news = News::sole();
+    $transition = "/cms/news/{$news->id}/transition";
+    $url = fn ($media) => route('news.cover', ['news' => $news->id, 'media' => $media], false);
+    $this->get($url($first))->assertNotFound();
+    $this->actingAs($reviewer)->get(route('cms.media.image', $first))->assertOk()->assertHeader('Content-Type', 'image/png');
+    $this->actingAs($editor)->post($transition, ['action' => 'review'])->assertRedirect();
+    $this->actingAs($reviewer)->post($transition, ['action' => 'publish'])->assertRedirect();
+    $this->actingAs($editor)->put("/cms/news/{$news->id}", [...$data, 'cover_media_uuid' => $next->uuid])->assertSessionHasNoErrors();
+    auth()->logout();
+    $this->get(route('cms.media.image', $next))->assertRedirect('/login');
+    $this->get($url($first))->assertOk()->assertHeader('Content-Type', 'image/png');
+    $this->get($url($next))->assertNotFound();
+    $this->get('/')->assertInertia(fn (Assert $page) => $page->where('news.0.image', $url($first)));
+    $this->get('/noticias/'.$news->slug)->assertInertia(fn (Assert $page) => $page->where('content.image', $url($first)));
+    $this->actingAs($reviewer)->post($transition, ['action' => 'archive'])->assertRedirect();
+    $this->get($url($first))->assertNotFound();
+});
+
+test('salva notícia com capa enviada pela mídia mesmo com o parágrafo inicial vazio', function () {
+    Storage::fake('cms-media');
+    $this->actingAs(newsActor('editor'))->post('/cms/media', [
+        'title' => 'Capa da notícia',
+        'file' => UploadedFile::fake()->createWithContent('capa.png', base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a9XcAAAAASUVORK5CYII=')),
+    ])->assertRedirect('/cms/media');
+
+    $media = Media::sole();
+    $data = newsData([
+        'image' => '',
+        'cover_media_uuid' => $media->uuid,
+        'image_alt' => 'Imagem da notícia',
+        'body' => json_encode([['type' => 'paragraph', 'text' => '']]),
+    ]);
+
+    $this->post('/cms/news', $data)->assertSessionHasNoErrors()->assertRedirect();
+    $news = News::sole();
+    expect($news->cover_media_uuid)->toBe($media->uuid);
+    expect(json_decode($news->body, true))->toBe([]);
+    $this->put("/cms/news/{$news->id}", [...$data, 'body' => '[]'])->assertSessionHasNoErrors();
+    $this->put("/cms/news/{$news->id}", [...$data, 'body' => json_encode([['type' => 'image', 'url' => 'https://example.com/capa.png']])])
+        ->assertSessionHasErrors('body');
+});
+
+test('notícia aceita PDF da biblioteca sem texto personalizado no link', function () {
+    Storage::fake('cms-media');
+    $this->actingAs(newsActor('editor'))->post('/cms/media', [
+        'title' => 'Edital', 'file' => UploadedFile::fake()->createWithContent('edital.pdf', "%PDF-1.4\n%%EOF"),
+    ])->assertRedirect('/cms/media');
+
+    $pdf = Media::sole();
+    $block = ['type' => 'download', 'mediaId' => $pdf->id];
+    $data = newsData(['body' => json_encode([['type' => 'paragraph', 'text' => ''], $block])]);
+    $this->post('/cms/news', $data)->assertSessionHasNoErrors()->assertRedirect();
+    $news = News::sole();
+    expect(json_decode($news->body, true))->toBe([$block]);
+    $this->put("/cms/news/{$news->id}", [...$data, 'body' => json_encode([[...$block, 'text' => '   ']])])
+        ->assertSessionHasNoErrors();
+    $this->put("/cms/news/{$news->id}", [...$data, 'body' => json_encode([[...$block, 'mediaId' => $pdf->id + 1]])])
+        ->assertSessionHasErrors('body');
 });

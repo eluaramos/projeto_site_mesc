@@ -10,6 +10,8 @@ import { safeUrl } from '../../components/cms/contentUrls';
 export default function PublicNews({
     content,
     publishedAt,
+    downloadBase,
+    downloadUuids,
 }: {
     content: {
         title: string;
@@ -22,6 +24,8 @@ export default function PublicNews({
         locale: string;
     };
     publishedAt: string;
+    downloadBase: string;
+    downloadUuids: Record<number, string>;
 }) {
     const cover = content.image ? safeUrl(content.image, true) : undefined;
     return (
@@ -65,7 +69,7 @@ export default function PublicNews({
                         </figure>
                     )}
                     <div className="news-story-content">
-                        <ContentBlocks body={content.body} format={content.body_format} />
+                        <ContentBlocks body={content.body} format={content.body_format} downloadBase={downloadBase} downloadUuids={downloadUuids} />
                     </div>
                     <footer className="news-story-end">
                         <span className="news-story-category">

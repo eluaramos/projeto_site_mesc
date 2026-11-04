@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Media;
 use App\Models\Page;
 use App\Rules\AvailablePageSlug;
 use App\Rules\PageBlocks;
@@ -134,7 +135,7 @@ class PageController extends Controller
         abort_if(AvailablePageSlug::reserved($slug), 404);
         $page = Page::where('slug', $slug)->whereNotNull('published_content')->firstOrFail();
 
-        return Inertia::render('Cms/PublicPage', ['content' => $page->published_content]);
+        return Inertia::render('Cms/PublicPage', ['content' => $page->published_content, 'downloadUuids' => Media::downloadUuids($page->published_content), 'downloadBase' => '/documentos/pages/'.$page->id]);
     }
 
     private function validated(Request $request, ?Page $page = null): array

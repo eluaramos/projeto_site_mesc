@@ -1,7 +1,9 @@
+import { usePage } from '@inertiajs/react';
 import { PortalBlock, type PortalItem } from '../PortalBlocks';
 import { safeUrl } from './contentUrls';
 export type Block = {
-    type: 'paragraph' | 'heading' | 'quote' | 'list' | 'link' | 'image' | 'table' | 'card' | 'cards' | 'carousel' | 'stats' | 'banner';
+    type: 'paragraph' | 'heading' | 'quote' | 'list' | 'link' | 'image' | 'table' | 'card' | 'cards' | 'carousel' | 'stats' | 'banner' | 'download';
+    mediaId?: number;
     title?: string;
     items?: PortalItem[];
     columns?: number;
@@ -25,6 +27,7 @@ export const blockLabels: Record<Block['type'], string> = {
     carousel: 'Carrossel',
     stats: 'Indicadores',
     banner: 'Banner',
+    download: 'Download de documento',
 };
 export function readBlocks(body: string, format?: string): Block[] {
     if (format === 'blocks') {
@@ -37,12 +40,42 @@ export function readBlocks(body: string, format?: string): Block[] {
     }
     return [{ type: 'paragraph', text: body }];
 }
-export function ContentBlocks({ body, format }: { body: string; format?: string }) {
+export function ContentBlocks({
+    body,
+    format,
+    downloadBase,
+    downloadUuids,
+}: {
+    body: string;
+    format?: string;
+    downloadBase?: string;
+    downloadUuids?: Record<number, string>;
+}) {
+    const { pdfOptions } = usePage<{ pdfOptions?: { id: number; uuid: string }[] }>().props;
     if (format !== 'blocks') return <div className="leading-8 break-words whitespace-pre-wrap">{body}</div>;
     return (
         <div className="cms-content space-y-6 break-words">
             {readBlocks(body, format).map((block, index) => {
                 switch (block.type) {
+                    case 'download': {
+                        const uuid = block.mediaId
+                            ? downloadBase
+                                ? downloadUuids?.[block.mediaId]
+                                : pdfOptions?.find((pdf) => pdf.id === block.mediaId)?.uuid
+                            : undefined;
+                        return uuid ? (
+                            <p key={index} className="rounded border border-[var(--uff-border)] p-4">
+                                <a
+                                    className="font-semibold underline"
+                                    href={downloadBase ? downloadBase + '/' + uuid : '/cms/media/' + uuid + '/download'}
+                                >
+                                    {block.text?.trim() || 'Baixar documento'} (PDF)
+                                </a>
+                            </p>
+                        ) : (
+                            <p key={index}>Selecione um PDF.</p>
+                        );
+                    }
                     case 'card':
                     case 'cards':
                     case 'carousel':

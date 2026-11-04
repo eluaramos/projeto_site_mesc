@@ -38,6 +38,12 @@ return [
             'report' => false,
         ],
 
+        'cms-media' => [
+            'driver' => 'local',
+            'root' => storage_path('app/cms-media'),
+            'throw' => true,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

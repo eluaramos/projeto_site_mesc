@@ -4,7 +4,15 @@ import CmsLayout from '../Layouts/CmsLayout';
 export default function Dashboard() {
     const { auth } = usePage<{
         auth: {
-            user: { name: string; roles: string[]; can_view_pages: boolean; can_edit_pages: boolean; is_admin: boolean; can_view_news: boolean };
+            user: {
+                name: string;
+                roles: string[];
+                can_view_pages: boolean;
+                can_edit_pages: boolean;
+                is_admin: boolean;
+                can_view_media: boolean;
+                can_view_news: boolean;
+            };
         };
     }>().props;
     const canView = auth.user.can_view_pages;
@@ -71,6 +79,14 @@ export default function Dashboard() {
                     <Link href="/cms/news" className="cms-primary">
                         Gerenciar notícias
                         <ArrowRight size={16} />
+                    </Link>
+                </section>
+            )}
+            {auth.user.can_view_media && (
+                <section className="cms-card mt-6 p-7">
+                    <h2 className="mb-3 text-xl font-semibold">Biblioteca de mídia</h2>
+                    <Link href="/cms/media" className="cms-primary">
+                        Gerenciar arquivos
                     </Link>
                 </section>
             )}
