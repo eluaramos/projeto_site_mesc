@@ -89,9 +89,4 @@ Thumbs.db
 *.tmp
 *~
 
-
-# =========================
-# Git worktrees
-# =========================
-
-# Git worktrees used for isolated feature work
+/docs
