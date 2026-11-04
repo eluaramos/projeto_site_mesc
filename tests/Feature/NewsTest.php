@@ -169,3 +169,30 @@ test('notícia aceita PDF da biblioteca sem texto personalizado no link', functi
     $this->put("/cms/news/{$news->id}", [...$data, 'body' => json_encode([[...$block, 'mediaId' => $pdf->id + 1]])])
         ->assertSessionHasErrors('body');
 });
+
+test('dashboard mostra apenas itens em revisão aos perfis autorizados a publicar', function () {
+    News::create(newsData(['status' => 'review']));
+    News::create(newsData(['slug' => 'outra-noticia', 'status' => 'draft']));
+    foreach (['review', 'review', 'published'] as $i => $status) {
+        Page::create(['title' => 'Página', 'slug' => 'pagina-'.$i, 'body' => 'Texto', 'locale' => 'pt_BR', 'status' => $status]);
+    }
+
+    foreach (['admin', 'revisor'] as $role) {
+        $this->actingAs(newsActor($role))->get('/dashboard')->assertInertia(fn (Assert $page) => $page
+            ->has('reviewQueue', 2)
+            ->where('reviewQueue.0.count', 2)
+            ->where('reviewQueue.0.url', '/cms/pages?status=review')
+            ->where('reviewQueue.1.count', 1)
+            ->where('reviewQueue.1.url', '/cms/news?status=review'));
+    }
+
+    foreach (['editor', 'colaborador'] as $role) {
+        $this->actingAs(newsActor($role))->get('/dashboard')->assertInertia(fn (Assert $page) => $page->has('reviewQueue', 0));
+    }
+
+    $user = newsActor('editor')->givePermissionTo('noticias.publicar');
+    $this->actingAs($user)->get('/dashboard')->assertInertia(fn (Assert $page) => $page
+        ->has('reviewQueue', 1)->where('reviewQueue.0.kind', 'news'));
+    News::where('status', 'review')->update(['status' => 'archived']);
+    $this->get('/dashboard')->assertInertia(fn (Assert $page) => $page->has('reviewQueue', 0));
+});
