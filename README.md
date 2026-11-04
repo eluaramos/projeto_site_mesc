@@ -60,3 +60,38 @@ Este projeto está configurado para ser executado em um ambiente isolado utiliza
     ```
 
 *(Nota: O projeto está configurado para usar **SQLite** e drivers de arquivo para Sessão/Cache em desenvolvimento para facilitar a execução rápida.)*
+
+
+## Criar uma conta de administrador
+
+No terminal do DevContainer, execute os comandos abaixo no diretório do projeto.
+Se estiver no terminal do host com o Compose em execução, use
+`docker compose exec laravel.test php artisan ...` no lugar de `php artisan ...`.
+
+```bash
+php artisan migrate
+php artisan db:seed --class=RoleSeeder
+php artisan tinker
+```
+
+Dentro do Tinker, substitua o nome, o e-mail e a senha pelos dados da nova conta.
+Use um e-mail em minúsculas que ainda não esteja cadastrado e uma senha forte.
+
+```php
+$user = App\Models\User::create([
+    'name' => 'Administrador MESC',
+    'email' => 'admin@example.com',
+    'password' => Illuminate\Support\Facades\Hash::make('SUBSTITUA_POR_UMA_SENHA_FORTE'),
+]);
+$user->assignRole('admin');
+```
+
+Digite `exit` e entre no portal com a nova conta. Acesse **Dashboard → Gerenciar usuários**
+para criar outras contas e definir seus perfis. O cadastro público está desativado.
+
+Para promover uma conta existente, use este trecho no Tinker em vez de criar outra:
+
+```php
+$user = App\Models\User::where('email', 'email-da-conta@example.com')->firstOrFail();
+$user->assignRole('admin');
+```
