@@ -3,7 +3,9 @@ import { ArrowRight, FileText, Plus, ShieldCheck } from 'lucide-react';
 import CmsLayout from '../Layouts/CmsLayout';
 export default function Dashboard() {
     const { auth } = usePage<{
-        auth: { user: { name: string; roles: string[]; can_view_pages: boolean; can_edit_pages: boolean; is_admin: boolean } };
+        auth: {
+            user: { name: string; roles: string[]; can_view_pages: boolean; can_edit_pages: boolean; is_admin: boolean; can_view_news: boolean };
+        };
     }>().props;
     const canView = auth.user.can_view_pages;
     const canEdit = auth.user.can_edit_pages;
@@ -60,6 +62,18 @@ export default function Dashboard() {
                     </ol>
                 </section>
             </div>
+            {auth.user.can_view_news && (
+                <section className="cms-card mt-6 p-7">
+                    <h2 className="text-xl font-semibold">Notícias da Home</h2>
+                    <p className="my-3 text-sm text-[var(--uff-text-muted)]">
+                        Crie notícias, envie para revisão e escolha quais publicações aparecem na Home.
+                    </p>
+                    <Link href="/cms/news" className="cms-primary">
+                        Gerenciar notícias
+                        <ArrowRight size={16} />
+                    </Link>
+                </section>
+            )}
             {auth.user.is_admin && (
                 <section className="cms-card mt-6 p-7">
                     <h2 className="text-xl font-semibold">Gerenciamento de usuários</h2>

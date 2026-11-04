@@ -38,7 +38,7 @@ O slug fica fixo após a criação, evitando quebrar links antes da implementaç
 ## Validação
 
 - Testes funcionais de bloqueio de visitantes/colaboradores, validação, publicação indevida, revisão obrigatória, publicação, autoria, preservação da versão pública, arquivamento e auditoria.
-- Suíte completa: 38 testes e 322 assertions aprovados no container, usando SQLite em memória.
+- Suíte completa: 55 testes e 448 assertions aprovados no container, usando SQLite em memória.
 - Build Vite aprovado no container Linux. Não foi realizada homologação visual, auditoria de acessibilidade nem teste automatizado com PostgreSQL.
 
 ## Continuação recomendada
@@ -82,3 +82,20 @@ Dashboard → Gerenciar usuários e a opção Usuários no menu lateral aparecem
 Administradores podem listar e buscar por nome/e-mail, criar contas, editar nome/e-mail, atribuir um ou mais perfis existentes e definir uma nova senha opcional. Senhas precisam de confirmação e pelo menos 12 caracteres com letras e números; o model aplica hash e as respostas não incluem senhas nem hashes. Ao mudar o e-mail, a verificação anterior é invalidada. Não há envio automático de convite ou senha por e-mail.
 
 A exclusão de outra conta exige confirmação na interface. A própria conta não pode ser excluída e seu próprio perfil admin não pode ser removido, com verificação também no backend. A exclusão é definitiva; os registros editoriais existentes preservam seu conteúdo e as referências de autoria seguem as regras nullOnDelete das migrations.
+## Blocos de layout
+
+O seletor Adicionar conteúdo oferece Card, Grade de cards, Carrossel, Indicadores e Banner. Eles usam componentes React predefinidos, os estilos do portal e o mesmo fluxo editorial das páginas.
+
+- Card: título, texto, ícone institucional opcional, imagem com descrição e link.
+- Grade de cards: até 12 cards, título de seção opcional e 2, 3 ou 4 colunas em telas grandes; uma coluna em telas pequenas.
+- Carrossel: até 10 slides com título, imagem e descrição obrigatórios, texto e link opcionais; links exigem texto do botão. Navegação manual com botões acessíveis, sem avanço automático. Apenas o slide ativo é montado, evitando links ocultos focáveis.
+- Indicadores: até 12 pares rótulo/valor, informados pelo responsável com base em dados reais.
+- Banner: uma imagem com descrição, título, texto e botão opcionais.
+
+Os itens podem ser reordenados e removidos. Os blocos continuam podendo ser duplicados e reordenados pelo editor principal. A prévia e a página pública usam o mesmo renderizador.
+
+Imagens dos novos blocos podem usar HTTPS ou o caminho de um arquivo existente em /images/. Isso não adiciona um serviço de upload. Links continuam limitados a HTTPS ou caminhos internos. Tipos e ícones desconhecidos, configurações incompletas, URLs inseguras e quantidades acima dos limites são rejeitados pelo backend.
+
+A Home compartilha PortalCard e PortalStats com o CMS. O novo carrossel manual é disponibilizado aos blocos; o carrossel legado da Home ainda tem implementação própria. Cabeçalho, rodapé, autenticação e formulários administrativos não são blocos de conteúdo.
+
+Sugestões para próximas entregas: perguntas frequentes, downloads com metadados e descrição acessível, imagem ao lado de texto, aviso/chamada para ação, cronograma de seleção e listagens dinâmicas de docentes, notícias e documentos. Listagens dinâmicas devem consultar somente dados autorizados para divulgação.

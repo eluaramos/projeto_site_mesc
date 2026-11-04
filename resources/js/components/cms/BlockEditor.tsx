@@ -1,9 +1,12 @@
 import { ArrowDown, ArrowUp, Copy, Plus, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { type PortalVariant } from '../PortalBlocks';
 import { type Block, blockLabels } from './ContentBlocks';
+import LayoutBlockEditor, { initialLayoutItems } from './LayoutBlockEditor';
 
 type EditorBlock = Block & { key: number };
 function newBlock(type: Block['type']): Block {
+    if (['card', 'cards', 'carousel', 'stats', 'banner'].includes(type)) return { type, title: '', items: initialLayoutItems(), columns: 3 };
     if (type === 'image') return { type, url: '', alt: '', caption: '' };
     if (type === 'link') return { type, text: '', url: '' };
     if (type === 'table')
@@ -99,6 +102,16 @@ export default function BlockEditor({ initial, onChange, disabled }: { initial: 
                         </div>
                     </div>
                     <div className="space-y-4 p-5">
+                        {['card', 'cards', 'carousel', 'stats', 'banner'].includes(block.type) && (
+                            <LayoutBlockEditor
+                                id={block.key}
+                                type={block.type as PortalVariant}
+                                items={block.items ?? []}
+                                title={block.title}
+                                columns={block.columns}
+                                onChange={(change) => update(block.key, change)}
+                            />
+                        )}
                         {['paragraph', 'heading', 'quote', 'list', 'link'].includes(block.type) && (
                             <div>
                                 <label htmlFor={'text-' + block.key}>

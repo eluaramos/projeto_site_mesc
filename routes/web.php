@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PessoasController;
 use App\Http\Controllers\UserController;
@@ -20,13 +22,15 @@ Route::middleware('auth')->prefix('cms')->name('cms.')->group(function () {
     Route::middleware(EnsureAdmin::class)->group(function () {
         Route::resource('users', UserController::class)->except('show');
     });
+    Route::resource('news', NewsController::class)->parameters(['news' => 'page'])->except(['show', 'destroy']);
+    Route::post('/news/{page}/transition', [NewsController::class, 'transition'])->name('news.transition');
     Route::resource('pages', PageController::class)->except(['show', 'destroy']);
     Route::post('/pages/{page}/transition', [PageController::class, 'transition'])->name('pages.transition');
 });
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-});
+Route::get('/', HomeController::class);
+Route::get('/noticias', [NewsController::class, 'publicIndex'])->name('news.index');
+Route::get('/noticias/{slug}', [NewsController::class, 'show'])->name('news.show');
 
 Route::get('/sobre', function () {
     return Inertia::render('Sobre');
